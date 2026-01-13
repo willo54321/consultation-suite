@@ -1,0 +1,16 @@
+{
+  "name": "consultation-widget",
+  "version": "1.0.0",
+  "description": "Embeddable chat widget for consultation AI",
+  "main": "src/widget.js",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

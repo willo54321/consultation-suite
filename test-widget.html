@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Widget Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+        h1 { color: #333; }
+        p { color: #666; max-width: 600px; }
+    </style>
+</head>
+<body>
+    <h1>Consultation Widget Test</h1>
+    <p>This is a test page to preview the chat widget. Look for the chat button in the bottom-right corner.</p>
+    <p>Try asking questions like:</p>
+    <ul>
+        <li>"What is this consultation about?"</li>
+        <li>"What are the main concerns?"</li>
+        <li>"Tell me about the Green Belt impact"</li>
+    </ul>
+
+    <!-- Widget embed code -->
+    <script src="widget/build/widget.js"></script>
+    <script>
+        // Initialize widget after script loads
+        new ConsultationWidget({
+            projectId: '99f1730e-9bf3-4228-9259-41b31e610add',
+            baseUrl: 'http://localhost:8000'
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 text-gray-900 font-sans;
+}
+
+@layer components {
+  /* ============================================
+     BUTTONS
+     ============================================ */
+  .btn {
+    @apply px-4 py-2.5 rounded-lg font-semibold text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-br from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 focus:ring-primary-500 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-700 border-2 border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-400;
+  }
+
+  .btn-danger {
+    @apply bg-gradient-to-br from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 focus:ring-red-500 shadow-sm;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-400;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs rounded-md;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  /* ============================================
+     INPUTS & FORMS
+     ============================================ */
+  .input {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm transition-all duration-150 focus:outline-none focus:ring-0 focus:border-primary-600 focus:shadow-[0_0_0_3px_rgba(124,58,237,0.1)] bg-white;
+  }
+
+  .input-sm {
+    @apply px-3 py-2 text-sm;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm transition-all duration-150 focus:outline-none focus:ring-0 focus:border-primary-600 focus:shadow-[0_0_0_3px_rgba(124,58,237,0.1)] bg-white resize-y min-h-[120px];
+  }
+
+  .select {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm transition-all duration-150 focus:outline-none focus:ring-0 focus:border-primary-600 focus:shadow-[0_0_0_3px_rgba(124,58,237,0.1)] bg-white cursor-pointer appearance-none bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 14px center;
+    background-size: 18px;
+    padding-right: 48px;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+
+  .form-group {
+    @apply mb-5;
+  }
+
+  .form-hint {
+    @apply mt-1.5 text-xs text-gray-500;
+  }
+
+  /* ============================================
+     CARDS
+     ============================================ */
+  .card {
+    @apply bg-white rounded-xl shadow-card border border-gray-200 transition-shadow duration-150;
+  }
+
+  .card:hover {
+    @apply shadow-card-hover;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-gray-100 flex items-center justify-between;
+  }
+
+  .card-header h2, .card-header h3 {
+    @apply text-base font-semibold text-gray-800 m-0;
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-xl;
+  }
+
+  /* ============================================
+     STATUS BADGES
+     ============================================ */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .badge-active, .badge-approved {
+    @apply bg-positive-50 text-positive-600;
+  }
+
+  .badge-draft, .badge-pending {
+    @apply bg-idea-50 text-idea-600;
+  }
+
+  .badge-archived, .badge-rejected {
+    @apply bg-gray-100 text-gray-500;
+  }
+
+  .badge-primary {
+    @apply bg-primary-50 text-primary-600;
+  }
+
+  /* ============================================
+     TABLES
+     ============================================ */
+  .table-container {
+    @apply bg-white rounded-xl shadow-card border border-gray-200 overflow-hidden;
+  }
+
+  .table {
+    @apply w-full;
+  }
+
+  .table th {
+    @apply bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider;
+  }
+
+  .table td {
+    @apply px-6 py-4 text-sm text-gray-700 border-t border-gray-100;
+  }
+
+  .table tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  /* ============================================
+     TABS
+     ============================================ */
+  .tabs {
+    @apply flex border-b border-gray-200;
+  }
+
+  .tab {
+    @apply px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent transition-all duration-150 cursor-pointer hover:text-gray-700 hover:border-gray-300;
+  }
+
+  .tab.active {
+    @apply text-primary-600 border-primary-600;
+  }
+
+  /* ============================================
+     EMPTY STATES
+     ============================================ */
+  .empty-state {
+    @apply text-center py-16 px-6 bg-white border border-gray-200 rounded-xl;
+  }
+
+  .empty-state-icon {
+    @apply w-16 h-16 mx-auto mb-4 text-gray-300;
+  }
+
+  .empty-state h3 {
+    @apply text-lg font-semibold text-gray-800 mb-2;
+  }
+
+  .empty-state p {
+    @apply text-gray-500 mb-6;
+  }
+
+  /* ============================================
+     MODALS
+     ============================================ */
+  .modal-overlay {
+    @apply fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[1100];
+  }
+
+  .modal {
+    @apply bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-auto shadow-modal;
+  }
+
+  .modal-header {
+    @apply px-6 py-4 bg-primary-600 text-white rounded-t-2xl flex items-center justify-between;
+  }
+
+  .modal-header h2 {
+    @apply text-lg font-semibold m-0;
+  }
+
+  .modal-close {
+    @apply w-8 h-8 flex items-center justify-center rounded-md bg-white/20 text-white hover:bg-white/30 transition-colors;
+  }
+
+  .modal-body {
+    @apply p-6;
+  }
+
+  .modal-footer {
+    @apply px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-2xl flex justify-end gap-3;
+  }
+
+  /* ============================================
+     SIDEBAR (For Interactive Map)
+     ============================================ */
+  .sidebar-panel {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden;
+  }
+
+  .sidebar-header {
+    @apply px-5 py-4 bg-primary-600 text-white;
+  }
+
+  .sidebar-header h2 {
+    @apply text-sm font-semibold m-0;
+  }
+
+  .sidebar-header p {
+    @apply text-xs text-white/70 mt-1 m-0;
+  }
+
+  .sidebar-section {
+    @apply p-5 border-b border-gray-100 last:border-b-0;
+  }
+
+  .sidebar-section-title {
+    @apply text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3;
+  }
+
+  /* ============================================
+     CATEGORY TOGGLES
+     ============================================ */
+  .category-toggle {
+    @apply flex items-center p-3 rounded-lg border border-gray-200 cursor-pointer transition-all duration-150 bg-white;
+  }
+
+  .category-toggle:hover {
+    @apply bg-gray-50 border-gray-300;
+  }
+
+  .category-toggle.active {
+    @apply bg-white border-gray-300;
+  }
+
+  .category-toggle:not(.active) {
+    @apply bg-gray-50 border-transparent opacity-60;
+  }
+
+  .category-toggle-icon {
+    @apply w-8 h-8 rounded-md flex items-center justify-center mr-3 text-white text-sm;
+  }
+
+  .category-toggle-info {
+    @apply flex-1;
+  }
+
+  .category-toggle-name {
+    @apply text-sm font-medium text-gray-800;
+  }
+
+  .category-toggle-count {
+    @apply text-xs text-gray-400 mt-0.5;
+  }
+
+  .category-toggle-switch {
+    @apply w-9 h-5 bg-gray-200 rounded-full relative transition-colors duration-150;
+  }
+
+  .category-toggle-switch::after {
+    content: '';
+    @apply absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-150;
+  }
+
+  .category-toggle.active .category-toggle-switch {
+    @apply bg-primary-600;
+  }
+
+  .category-toggle.active .category-toggle-switch::after {
+    transform: translateX(16px);
+  }
+
+  /* ============================================
+     FIELD TYPES PALETTE (Form Builder)
+     ============================================ */
+  .field-type-btn {
+    @apply flex items-center gap-2 p-3 bg-gray-50 border-2 border-gray-200 rounded-lg cursor-pointer text-sm font-medium text-gray-700 transition-all duration-150;
+  }
+
+  .field-type-btn:hover {
+    @apply bg-primary-50 border-primary-600 text-primary-600 -translate-y-0.5;
+  }
+
+  .field-type-btn svg, .field-type-btn .icon {
+    @apply w-5 h-5 text-primary-600;
+  }
+
+  /* ============================================
+     DRAGGABLE FIELD ITEMS
+     ============================================ */
+  .field-item {
+    @apply flex items-center gap-3 p-4 bg-gray-50 border-2 border-gray-200 rounded-lg cursor-grab transition-all duration-150;
+  }
+
+  .field-item:hover {
+    @apply bg-white border-primary-600 shadow-card-hover;
+  }
+
+  .field-item.dragging {
+    @apply opacity-50 cursor-grabbing;
+  }
+
+  .field-item-icon {
+    @apply w-9 h-9 bg-primary-50 rounded-md flex items-center justify-center text-primary-600;
+  }
+
+  .field-item-info {
+    @apply flex-1;
+  }
+
+  .field-item-label {
+    @apply text-sm font-semibold text-gray-800;
+  }
+
+  .field-item-type {
+    @apply text-xs text-gray-500 mt-0.5;
+  }
+
+  .field-item-badge {
+    @apply inline-block ml-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded;
+  }
+
+  .field-item-badge.required {
+    @apply bg-negative-50 text-negative-600;
+  }
+
+  .field-item-badge.ai {
+    @apply bg-primary-50 text-primary-600;
+  }
+
+  /* ============================================
+     SHORTCODE INPUT
+     ============================================ */
+  .shortcode-input {
+    @apply w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-xs font-mono cursor-pointer transition-all duration-150;
+  }
+
+  .shortcode-input:focus {
+    @apply outline-none border-primary-600 shadow-[0_0_0_3px_rgba(124,58,237,0.1)];
+  }
+
+  /* ============================================
+     STAR RATING
+     ============================================ */
+  .star-rating {
+    @apply flex gap-1;
+  }
+
+  .star {
+    @apply text-3xl cursor-pointer text-gray-300 transition-all duration-150 select-none leading-none;
+  }
+
+  .star:hover, .star.hover {
+    @apply text-yellow-400 scale-110;
+  }
+
+  .star.active {
+    @apply text-yellow-400;
+  }
+
+  /* ============================================
+     WIZARD PROGRESS BAR
+     ============================================ */
+  .wizard-progress {
+    @apply h-1 bg-gray-200 rounded-full overflow-hidden;
+  }
+
+  .wizard-progress-bar {
+    @apply h-full bg-gradient-to-r from-primary-600 to-primary-400 transition-all duration-300;
+  }
+
+  .wizard-step-indicator {
+    @apply text-sm text-gray-500 text-center mt-2;
+  }
+
+  .wizard-step-indicator .current {
+    @apply text-primary-600 font-bold;
+  }
+
+  /* ============================================
+     FAB (Floating Action Button)
+     ============================================ */
+  .fab {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg shadow-md cursor-pointer transition-all duration-150 border-none;
+  }
+
+  .fab:hover {
+    @apply bg-primary-700 shadow-lg -translate-y-0.5;
+  }
+
+  .fab.active {
+    @apply w-11 h-11 p-0 rounded-full bg-white text-gray-500 border border-gray-200 shadow-md justify-center;
+  }
+
+  .fab.active:hover {
+    @apply bg-gray-50 text-gray-700;
+  }
+
+  /* ============================================
+     LEAFLET MAP OVERRIDES
+     ============================================ */
+  .leaflet-container {
+    @apply font-sans;
+  }
+
+  .leaflet-popup-content-wrapper {
+    @apply rounded-xl shadow-lg border border-gray-100 p-0;
+  }
+
+  .leaflet-popup-content {
+    @apply m-0;
+  }
+
+  .leaflet-popup-tip {
+    @apply bg-white;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-300;
+}
+
+/* Force Leaflet map below modals - outside @layer for higher specificity */
+.leaflet-container {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Contain all Leaflet panes within their stacking context */
+.leaflet-pane,
+.leaflet-control,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane,
+.leaflet-popup {
+  z-index: auto !important;
+}
+
+/* Force modals above everything - outside @layer for higher specificity */
+.modal-overlay {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
+.modal-overlay .modal {
+  position: relative !important;
+  z-index: 100000 !important;
+}

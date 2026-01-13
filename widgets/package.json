@@ -1,0 +1,14 @@
+{
+  "name": "@consultation-suite/widgets",
+  "version": "1.0.0",
+  "description": "Embeddable widgets for Consultation Suite",
+  "main": "dist/loader.js",
+  "scripts": {
+    "dev": "esbuild src/loader/index.js --bundle --outfile=dist/consultation-widgets.js --watch --sourcemap",
+    "build": "esbuild src/loader/index.js --bundle --outfile=dist/consultation-widgets.js --minify",
+    "build:all": "node scripts/build-all.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}

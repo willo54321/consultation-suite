@@ -1,0 +1,20 @@
+{
+  "name": "consultation-suite",
+  "version": "1.0.0",
+  "description": "Consultation Engagement Suite - SaaS platform for planning consultation engagement",
+  "private": true,
+  "workspaces": [
+    "admin-frontend",
+    "widgets"
+  ],
+  "scripts": {
+    "dev": "docker-compose up -d && npm run dev:frontend",
+    "dev:frontend": "npm run dev --workspace=admin-frontend",
+    "dev:widgets": "npm run dev --workspace=widgets",
+    "build": "npm run build --workspaces",
+    "build:widgets": "npm run build --workspace=widgets",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "author": "",
+  "license": "ISC"
+}
