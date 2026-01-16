@@ -146,7 +146,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   onOverlayBoundsChange
 }, ref) => {
   const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script-admin',  // Unique ID for admin map
+    id: 'google-map-script-interactive',  // Unique ID for interactive map
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES
   });
@@ -399,9 +399,10 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     console.log('[InteractiveMap] API Key present:', !!GOOGLE_MAPS_API_KEY);
     console.log('[InteractiveMap] API Key length:', GOOGLE_MAPS_API_KEY?.length);
     console.log('[InteractiveMap] isLoaded:', isLoaded);
+    console.log('[InteractiveMap] loadError:', loadError);
     console.log('[InteractiveMap] center:', center, 'mapCenter:', mapCenter);
     console.log('[InteractiveMap] zoom:', zoom);
-  }, [isLoaded, center, mapCenter, zoom]);
+  }, [isLoaded, loadError, center, mapCenter, zoom]);
 
   if (!isLoaded) {
     return (
