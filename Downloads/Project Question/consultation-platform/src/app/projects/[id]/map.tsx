@@ -750,10 +750,34 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
             </div>
           )}
 
-          {/* Map with Sidebar - using grid for reliable height */}
-          <div className="grid rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6" style={{ gridTemplateColumns: sidebarCollapsed ? '48px 1fr' : '320px 1fr', height: '600px' }}>
-            {/* Sidebar with tabs */}
-            <div className="bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden">
+          {/* Map Container - matches working embed pattern */}
+          <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6" style={{ height: '600px', width: '100%' }}>
+            {/* Map fills entire container */}
+            <InteractiveMap
+              ref={mapRef}
+              center={mapCenter}
+              zoom={mapZoom}
+              markers={allMarkers}
+              drawings={drawings}
+              overlays={overlays}
+              geoLayers={geoLayers}
+              selectedOverlayId={selectedOverlayId}
+              isAddingMarker={isAddingMarker}
+              isDrawingMode={isDrawingMode}
+              activeDrawingTool={activeDrawingTool}
+              activeDrawingColor={drawingForm.color}
+              onMapClick={handleMapClick}
+              onDrawingCreated={handleDrawingCreated}
+              onBoundsChange={(center: [number, number], zoom: number) => {
+                setMapCenter(center)
+                setMapZoom(zoom)
+              }}
+              onOverlayClick={(id: string) => setSelectedOverlayId(id)}
+              onOverlayBoundsChange={updateOverlayBounds}
+            />
+
+            {/* Sidebar as overlay on top of map */}
+            <div className={`absolute top-0 left-0 h-full bg-white border-r border-gray-200 flex flex-col z-10 transition-all duration-300 ${sidebarCollapsed ? 'w-12' : 'w-80'}`}>
               {/* Header with collapse button */}
               <div className={`flex items-center justify-between p-3 bg-brand-600 text-white ${sidebarCollapsed ? 'px-2' : ''}`}>
                 {!sidebarCollapsed && (
@@ -818,71 +842,71 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
                             <p className="text-xs text-gray-400 mt-1">Upload an image to get started</p>
                           </div>
                         ) : (
-                      overlays.map(overlay => (
-                        <div
-                          key={overlay.id}
-                          className={`rounded-lg border transition-all cursor-pointer ${
-                            selectedOverlayId === overlay.id
-                              ? 'border-brand-400 bg-brand-50 shadow-sm'
-                              : 'border-gray-200 hover:border-gray-300 bg-white'
-                          }`}
-                          onClick={() => setSelectedOverlayId(selectedOverlayId === overlay.id ? null : overlay.id)}
-                        >
-                          <div className="flex items-center gap-2 p-2">
-                            <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 flex-shrink-0">
-                              <img src={overlay.imageUrl} alt={overlay.name} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-sm text-gray-800 truncate">{overlay.name}</p>
-                              <p className="text-xs text-gray-400">{Math.round(overlay.opacity * 100)}% opacity</p>
-                            </div>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); toggleOverlayVisibility(overlay.id) }}
-                              className={`p-1.5 rounded transition-colors ${
-                                overlay.visible ? 'text-brand-600 bg-brand-100 hover:bg-brand-200' : 'text-gray-400 bg-gray-100 hover:bg-gray-200'
+                          overlays.map(overlay => (
+                            <div
+                              key={overlay.id}
+                              className={`rounded-lg border transition-all cursor-pointer ${
+                                selectedOverlayId === overlay.id
+                                  ? 'border-brand-400 bg-brand-50 shadow-sm'
+                                  : 'border-gray-200 hover:border-gray-300 bg-white'
                               }`}
+                              onClick={() => setSelectedOverlayId(selectedOverlayId === overlay.id ? null : overlay.id)}
                             >
-                              {overlay.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-                            </button>
-                          </div>
-                          {selectedOverlayId === overlay.id && (
-                            <div className="px-3 pb-3 space-y-3 border-t border-gray-100 mt-2 pt-3">
-                              <div>
-                                <div className="flex justify-between text-xs mb-1">
-                                  <span className="text-gray-500">Opacity</span>
-                                  <span className="text-gray-700 font-medium">{Math.round(overlay.opacity * 100)}%</span>
+                              <div className="flex items-center gap-2 p-2">
+                                <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 flex-shrink-0">
+                                  <img src={overlay.imageUrl} alt={overlay.name} className="w-full h-full object-cover" />
                                 </div>
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="1"
-                                  step="0.05"
-                                  value={overlay.opacity}
-                                  onChange={(e) => updateOverlayOpacity(overlay.id, parseFloat(e.target.value))}
-                                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-600"
-                                  onClick={(e) => e.stopPropagation()}
-                                />
-                              </div>
-                              <div className="flex gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm text-gray-800 truncate">{overlay.name}</p>
+                                  <p className="text-xs text-gray-400">{Math.round(overlay.opacity * 100)}% opacity</p>
+                                </div>
                                 <button
-                                  onClick={(e) => { e.stopPropagation(); fitToOverlay(overlay) }}
-                                  className="flex-1 flex items-center justify-center gap-1 py-1.5 text-xs font-medium text-brand-600 bg-brand-100 hover:bg-brand-200 rounded transition-colors"
+                                  onClick={(e) => { e.stopPropagation(); toggleOverlayVisibility(overlay.id) }}
+                                  className={`p-1.5 rounded transition-colors ${
+                                    overlay.visible ? 'text-brand-600 bg-brand-100 hover:bg-brand-200' : 'text-gray-400 bg-gray-100 hover:bg-gray-200'
+                                  }`}
                                 >
-                                  <ZoomIn size={14} /> Fit to View
-                                </button>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); deleteOverlay(overlay.id) }}
-                                  className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded transition-colors"
-                                >
-                                  <Trash2 size={14} />
+                                  {overlay.visible ? <Eye size={16} /> : <EyeOff size={16} />}
                                 </button>
                               </div>
-                              <p className="text-xs text-gray-400 text-center">Drag corner handles to resize</p>
+                              {selectedOverlayId === overlay.id && (
+                                <div className="px-3 pb-3 space-y-3 border-t border-gray-100 mt-2 pt-3">
+                                  <div>
+                                    <div className="flex justify-between text-xs mb-1">
+                                      <span className="text-gray-500">Opacity</span>
+                                      <span className="text-gray-700 font-medium">{Math.round(overlay.opacity * 100)}%</span>
+                                    </div>
+                                    <input
+                                      type="range"
+                                      min="0"
+                                      max="1"
+                                      step="0.05"
+                                      value={overlay.opacity}
+                                      onChange={(e) => updateOverlayOpacity(overlay.id, parseFloat(e.target.value))}
+                                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-600"
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); fitToOverlay(overlay) }}
+                                      className="flex-1 flex items-center justify-center gap-1 py-1.5 text-xs font-medium text-brand-600 bg-brand-100 hover:bg-brand-200 rounded transition-colors"
+                                    >
+                                      <ZoomIn size={14} /> Fit to View
+                                    </button>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); deleteOverlay(overlay.id) }}
+                                      className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded transition-colors"
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                  </div>
+                                  <p className="text-xs text-gray-400 text-center">Drag corner handles to resize</p>
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      ))
-                    )}
+                          ))
+                        )}
                       </div>
                     </>
                   )}
@@ -1026,32 +1050,6 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Map container - grid cell automatically fills available space */}
-            <div className="w-full h-full">
-              <InteractiveMap
-                ref={mapRef}
-                center={mapCenter}
-                zoom={mapZoom}
-                markers={allMarkers}
-                drawings={drawings}
-                overlays={overlays}
-                geoLayers={geoLayers}
-                selectedOverlayId={selectedOverlayId}
-                isAddingMarker={isAddingMarker}
-                isDrawingMode={isDrawingMode}
-                activeDrawingTool={activeDrawingTool}
-                activeDrawingColor={drawingForm.color}
-                onMapClick={handleMapClick}
-                onDrawingCreated={handleDrawingCreated}
-                onBoundsChange={(center: [number, number], zoom: number) => {
-                  setMapCenter(center)
-                  setMapZoom(zoom)
-                }}
-                onOverlayClick={(id: string) => setSelectedOverlayId(id)}
-                onOverlayBoundsChange={updateOverlayBounds}
-              />
             </div>
           </div>
 
