@@ -145,11 +145,18 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   onOverlayClick,
   onOverlayBoundsChange
 }, ref) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script-embed',  // Use same ID as EmbedMap
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES
   });
+
+  // Log any load errors
+  useEffect(() => {
+    if (loadError) {
+      console.error('[InteractiveMap] Load error:', loadError);
+    }
+  }, [loadError]);
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
@@ -183,9 +190,16 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   }, [isAddingMarker, onMapClick]);
 
   const onLoad = useCallback((map: google.maps.Map) => {
+    console.log('[InteractiveMap] onLoad called, map instance:', !!map);
+    console.log('[InteractiveMap] Setting center to:', { lat: center[0], lng: center[1] });
+    console.log('[InteractiveMap] Setting zoom to:', zoom);
     map.setCenter({ lat: center[0], lng: center[1] });
     map.setZoom(zoom);
     setMap(map);
+
+    // Debug: Check map container dimensions
+    const container = map.getDiv();
+    console.log('[InteractiveMap] Container dimensions:', container?.offsetWidth, 'x', container?.offsetHeight);
   }, [center, zoom]);
 
   const onUnmount = useCallback(() => {
@@ -371,11 +385,23 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     setDragStartBounds(null);
   }, []);
 
+  // Debug logging for production issues
+  useEffect(() => {
+    console.log('[InteractiveMap] API Key present:', !!GOOGLE_MAPS_API_KEY);
+    console.log('[InteractiveMap] API Key length:', GOOGLE_MAPS_API_KEY?.length);
+    console.log('[InteractiveMap] isLoaded:', isLoaded);
+    console.log('[InteractiveMap] center:', center, 'mapCenter:', mapCenter);
+    console.log('[InteractiveMap] zoom:', zoom);
+  }, [isLoaded, center, mapCenter, zoom]);
+
   if (!isLoaded) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-gray-500">
           {GOOGLE_MAPS_API_KEY ? 'Loading map...' : 'Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to enable map'}
+        </div>
+        <div className="text-xs text-gray-400 mt-2">
+          Debug: Key={GOOGLE_MAPS_API_KEY ? 'present' : 'missing'}, Loaded={String(isLoaded)}
         </div>
       </div>
     );
@@ -385,6 +411,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     <GoogleMap
       mapContainerStyle={{
         height: '100%',
+        minHeight: '400px',
         width: '100%',
         cursor: isAddingMarker || isDrawingMode ? 'crosshair' : isDraggingOverlay ? 'grabbing' : 'grab'
       }}

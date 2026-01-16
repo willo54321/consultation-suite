@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import 'leaflet.heat'
+
+// Leaflet CSS is loaded dynamically at runtime to avoid conflicts with Google Maps
 
 // Extend Leaflet types for heatmap
 declare module 'leaflet' {
@@ -49,10 +50,11 @@ function HeatmapLayer({
     if (!visible || points.length === 0) return
 
     const heat = L.heatLayer(points, {
-      radius: 25,
-      blur: 15,
+      radius: 35,
+      blur: 20,
       maxZoom: 17,
       max: 1.0,
+      minOpacity: 0.4,
       gradient,
     })
 
@@ -69,6 +71,23 @@ function HeatmapLayer({
 export function SentimentHeatmap({ clusters, height = '400px' }: SentimentHeatmapProps) {
   const [showPositive, setShowPositive] = useState(true)
   const [showNegative, setShowNegative] = useState(true)
+  const [cssLoaded, setCssLoaded] = useState(false)
+
+  // Load Leaflet CSS dynamically at runtime to avoid conflicts with Google Maps
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !document.getElementById('leaflet-css')) {
+      const link = document.createElement('link')
+      link.id = 'leaflet-css'
+      link.rel = 'stylesheet'
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='
+      link.crossOrigin = ''
+      document.head.appendChild(link)
+      link.onload = () => setCssLoaded(true)
+    } else {
+      setCssLoaded(true)
+    }
+  }, [])
 
   // Calculate center and zoom from clusters
   const { center, zoom } = useMemo(() => {
@@ -112,43 +131,56 @@ export function SentimentHeatmap({ clusters, height = '400px' }: SentimentHeatma
     const maxCount = Math.max(...clusters.map(c => c.count), 1)
 
     clusters.forEach(cluster => {
-      const intensity = cluster.count / maxCount
+      // Boost intensity: minimum 0.5, scale up to 1.0
+      const rawIntensity = cluster.count / maxCount
+      const intensity = 0.5 + (rawIntensity * 0.5)
 
       if (cluster.sentiment === 'positive') {
         positive.push([cluster.latitude, cluster.longitude, intensity])
       } else if (cluster.sentiment === 'negative') {
         negative.push([cluster.latitude, cluster.longitude, intensity])
       } else if (cluster.sentiment === 'mixed') {
-        positive.push([cluster.latitude, cluster.longitude, intensity * 0.5])
-        negative.push([cluster.latitude, cluster.longitude, intensity * 0.5])
+        positive.push([cluster.latitude, cluster.longitude, intensity * 0.7])
+        negative.push([cluster.latitude, cluster.longitude, intensity * 0.7])
       }
     })
 
     return { positivePoints: positive, negativePoints: negative }
   }, [clusters])
 
-  // Gradient for positive (green)
+  // Gradient for positive (vibrant green)
   const positiveGradient = {
-    0.0: 'rgba(16, 185, 129, 0)',
-    0.2: 'rgba(16, 185, 129, 0.3)',
-    0.4: 'rgba(5, 150, 105, 0.5)',
-    0.6: 'rgba(4, 120, 87, 0.7)',
-    0.8: 'rgba(6, 95, 70, 0.85)',
-    1.0: 'rgba(6, 78, 59, 1)',
+    0.0: 'rgba(34, 197, 94, 0)',
+    0.2: 'rgba(34, 197, 94, 0.5)',
+    0.4: 'rgba(22, 163, 74, 0.7)',
+    0.6: 'rgba(21, 128, 61, 0.85)',
+    0.8: 'rgba(22, 101, 52, 0.95)',
+    1.0: 'rgba(20, 83, 45, 1)',
   }
 
-  // Gradient for negative (red)
+  // Gradient for negative (vibrant red)
   const negativeGradient = {
-    0.0: 'rgba(239, 68, 68, 0)',
-    0.2: 'rgba(239, 68, 68, 0.3)',
-    0.4: 'rgba(220, 38, 38, 0.5)',
-    0.6: 'rgba(185, 28, 28, 0.7)',
-    0.8: 'rgba(153, 27, 27, 0.85)',
+    0.0: 'rgba(248, 113, 113, 0)',
+    0.2: 'rgba(239, 68, 68, 0.5)',
+    0.4: 'rgba(220, 38, 38, 0.7)',
+    0.6: 'rgba(185, 28, 28, 0.85)',
+    0.8: 'rgba(153, 27, 27, 0.95)',
     1.0: 'rgba(127, 29, 29, 1)',
   }
 
   const positiveCount = clusters.filter(c => c.sentiment === 'positive' || c.sentiment === 'mixed').reduce((sum, c) => sum + c.count, 0)
   const negativeCount = clusters.filter(c => c.sentiment === 'negative' || c.sentiment === 'mixed').reduce((sum, c) => sum + c.count, 0)
+
+  // Wait for CSS to load before rendering map
+  if (!cssLoaded) {
+    return (
+      <div style={{ height }} className="relative">
+        <div className="h-full bg-slate-100 rounded-xl animate-pulse flex items-center justify-center">
+          <p className="text-slate-500 text-sm">Loading heatmap...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ height }} className="relative">
