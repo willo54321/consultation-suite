@@ -187,6 +187,12 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     map.setZoom(zoom)
     map.setMapTypeId('roadmap')
     setMap(map)
+
+    // Force tiles to load - critical for maps in tabbed interfaces
+    setTimeout(() => {
+      google.maps.event.trigger(map, 'resize')
+      map.setCenter({ lat: center[0], lng: center[1] })
+    }, 100)
   }, [center, zoom])
 
   const onUnmount = useCallback(() => {
