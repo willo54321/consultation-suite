@@ -5,7 +5,7 @@ import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF, PolygonF, PolylineF, D
 import * as turf from '@turf/turf';
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-const LIBRARIES: ("places" | "drawing" | "geometry" | "visualization")[] = ['places', 'drawing', 'geometry', 'visualization'];
+const LIBRARIES: ("drawing" | "geometry")[] = ['drawing', 'geometry'];
 
 export interface MapMarker {
   id: string;
