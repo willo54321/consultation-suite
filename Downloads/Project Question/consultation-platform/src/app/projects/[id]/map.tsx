@@ -750,10 +750,10 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
             </div>
           )}
 
-          {/* Map with Sidebar */}
-          <div className="flex gap-0 h-[600px] rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6">
+          {/* Map with Sidebar - using grid for reliable height */}
+          <div className="grid rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6" style={{ gridTemplateColumns: sidebarCollapsed ? '48px 1fr' : '320px 1fr', height: '600px' }}>
             {/* Sidebar with tabs */}
-            <div className={`bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-12' : 'w-80'}`}>
+            <div className="bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden">
               {/* Header with collapse button */}
               <div className={`flex items-center justify-between p-3 bg-brand-600 text-white ${sidebarCollapsed ? 'px-2' : ''}`}>
                 {!sidebarCollapsed && (
@@ -1028,8 +1028,8 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
               )}
             </div>
 
-            {/* Map container - explicit 600px height to match parent */}
-            <div className="flex-1" style={{ height: '600px' }}>
+            {/* Map container - grid cell automatically fills available space */}
+            <div className="w-full h-full">
               <InteractiveMap
                 ref={mapRef}
                 center={mapCenter}
