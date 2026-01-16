@@ -1028,32 +1028,30 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
               )}
             </div>
 
-            {/* Map - relative + absolute ensures reliable height in production */}
-            <div className="flex-1 min-h-0 relative">
-              <div className="absolute inset-0">
-                <InteractiveMap
-                  ref={mapRef}
-                  center={mapCenter}
-                  zoom={mapZoom}
-                  markers={allMarkers}
-                  drawings={drawings}
-                  overlays={overlays}
-                  geoLayers={geoLayers}
-                  selectedOverlayId={selectedOverlayId}
-                  isAddingMarker={isAddingMarker}
-                  isDrawingMode={isDrawingMode}
-                  activeDrawingTool={activeDrawingTool}
-                  activeDrawingColor={drawingForm.color}
-                  onMapClick={handleMapClick}
-                  onDrawingCreated={handleDrawingCreated}
-                  onBoundsChange={(center: [number, number], zoom: number) => {
-                    setMapCenter(center)
-                    setMapZoom(zoom)
-                  }}
-                  onOverlayClick={(id: string) => setSelectedOverlayId(id)}
-                  onOverlayBoundsChange={updateOverlayBounds}
-                />
-              </div>
+            {/* Map container - explicit 600px height to match parent */}
+            <div className="flex-1" style={{ height: '600px' }}>
+              <InteractiveMap
+                ref={mapRef}
+                center={mapCenter}
+                zoom={mapZoom}
+                markers={allMarkers}
+                drawings={drawings}
+                overlays={overlays}
+                geoLayers={geoLayers}
+                selectedOverlayId={selectedOverlayId}
+                isAddingMarker={isAddingMarker}
+                isDrawingMode={isDrawingMode}
+                activeDrawingTool={activeDrawingTool}
+                activeDrawingColor={drawingForm.color}
+                onMapClick={handleMapClick}
+                onDrawingCreated={handleDrawingCreated}
+                onBoundsChange={(center: [number, number], zoom: number) => {
+                  setMapCenter(center)
+                  setMapZoom(zoom)
+                }}
+                onOverlayClick={(id: string) => setSelectedOverlayId(id)}
+                onOverlayBoundsChange={updateOverlayBounds}
+              />
             </div>
           </div>
 
