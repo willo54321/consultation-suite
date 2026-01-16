@@ -48,7 +48,7 @@ export default function LocationPickerMap({
   onLocationChange
 }: LocationPickerMapProps) {
   const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script-admin',
+    id: 'google-map-script-embed',  // Same ID as all other maps to avoid conflicts
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES
   })
