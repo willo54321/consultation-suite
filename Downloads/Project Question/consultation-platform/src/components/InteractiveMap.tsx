@@ -195,6 +195,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     console.log('[InteractiveMap] Setting zoom to:', zoom);
     map.setCenter({ lat: center[0], lng: center[1] });
     map.setZoom(zoom);
+    map.setMapTypeId('roadmap');  // Explicitly set map type like EmbedMap does
     setMap(map);
 
     // Debug: Check map container dimensions
@@ -423,12 +424,17 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
       }}
       center={mapCenter}
       zoom={zoom}
+      mapTypeId="roadmap"
       options={{
         mapTypeId: 'roadmap',
         mapTypeControl: true,
         streetViewControl: false,
         fullscreenControl: true,
         zoomControl: true,
+        scaleControl: true,
+        rotateControl: false,
+        panControl: false,
+        tilt: 0,
         gestureHandling: 'greedy'
       }}
       onClick={handleMapClick}
