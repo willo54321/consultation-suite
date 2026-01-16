@@ -2,28 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Protect Google Maps tiles from global styles */
+/* Protect Google Maps tiles from Tailwind's img styles */
 .gm-style img {
   max-width: none !important;
   max-height: none !important;
-}
-
-.gm-style {
-  font-family: inherit;
-  min-height: 100% !important;
-  height: 100% !important;
-}
-
-/* Ensure map containers don't get affected by Tailwind resets */
-.gm-style * {
-  box-sizing: content-box;
-}
-
-/* Force map container to fill parent */
-.map-container-600 {
-  width: 100% !important;
-  height: 600px !important;
-  min-height: 600px !important;
 }
 
 @layer base {
