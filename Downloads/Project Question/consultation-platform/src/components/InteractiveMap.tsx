@@ -10,8 +10,8 @@ const LIBRARIES: ("drawing" | "geometry")[] = ['drawing', 'geometry'];
 export interface MapMarker {
   id: string;
   label: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number | null;
+  longitude?: number | null;
   color: string;
   notes: string | null;
   type?: string;
@@ -23,7 +23,7 @@ export interface MapDrawing {
   geometry: GeoJSON.Geometry;
   label: string;
   color: string;
-  notes?: string;
+  notes?: string | null;
   area?: number;
   length?: number;
 }
@@ -405,7 +405,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
 
   if (!isLoaded) {
     return (
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} className="flex items-center justify-center bg-gray-100 rounded-lg">
+      <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-gray-500">
           {GOOGLE_MAPS_API_KEY ? 'Loading map...' : 'Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to enable map'}
         </div>
@@ -414,7 +414,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   }
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+    <div className="h-full w-full">
       <GoogleMap
         mapContainerStyle={{
           height: '100%',
@@ -433,11 +433,11 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      {/* Markers */}
-      {markers.map(marker => (
+      {/* Markers - only render those with valid coordinates */}
+      {markers.filter(m => m.latitude != null && m.longitude != null).map(marker => (
         <MarkerF
           key={marker.id}
-          position={{ lat: marker.latitude, lng: marker.longitude }}
+          position={{ lat: marker.latitude!, lng: marker.longitude! }}
           icon={createMarkerIcon(marker.color)}
           onClick={() => {
             if (onMarkerClick) {
@@ -452,7 +452,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
       {/* Marker Info Window */}
       {selectedMarker && (() => {
         const marker = markers.find(m => m.id === selectedMarker);
-        if (!marker) return null;
+        if (!marker || marker.latitude == null || marker.longitude == null) return null;
 
         return (
           <InfoWindowF

@@ -1028,9 +1028,9 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
               )}
             </div>
 
-            {/* Map - relative/absolute positioning ensures height is properly set */}
-            <div className="flex-1 relative">
-              <div className="absolute inset-0">
+            {/* Map - min-h-0 allows flex item to properly compute height in production */}
+            <div className="flex-1 min-h-0">
+              <div className="h-full w-full">
                 <InteractiveMap
                   ref={mapRef}
                   center={mapCenter}
