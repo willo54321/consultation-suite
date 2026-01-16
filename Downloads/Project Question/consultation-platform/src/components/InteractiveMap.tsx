@@ -200,6 +200,15 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
     // Debug: Check map container dimensions
     const container = map.getDiv();
     console.log('[InteractiveMap] Container dimensions:', container?.offsetWidth, 'x', container?.offsetHeight);
+
+    // Force tiles to load - critical for maps in tabbed interfaces
+    // The map may initialize while hidden, requiring resize trigger
+    setTimeout(() => {
+      google.maps.event.trigger(map, 'resize');
+      map.setCenter({ lat: center[0], lng: center[1] });
+      map.setZoom(zoom);
+      console.log('[InteractiveMap] Resize triggered');
+    }, 100);
   }, [center, zoom]);
 
   const onUnmount = useCallback(() => {
