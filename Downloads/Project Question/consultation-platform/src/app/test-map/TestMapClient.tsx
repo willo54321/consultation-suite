@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-interface TestMapClientProps {
-  apiKey: string
-}
+// Read API key directly in client component - EXACTLY like EmbedMap does
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
 
-export default function TestMapClient({ apiKey }: TestMapClientProps) {
+export default function TestMapClient() {
+  const apiKey = GOOGLE_MAPS_API_KEY
   const mapRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState('Loading...')
   const [mapInstance, setMapInstance] = useState<any>(null)
