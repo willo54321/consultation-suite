@@ -3,8 +3,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Plus, Trash2, X, Pentagon, Minus, Eye, EyeOff, Upload, Save, ChevronLeft, ChevronRight, Image, ZoomIn, Map, Code, MessageCircle, Globe, Copy, Check, ThumbsUp, ThumbsDown, HelpCircle, ExternalLink, Clock, CheckCircle, XCircle, FileUp, Layers, MapPinned } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import InteractiveMap, { calculateDrawingMetrics, ImageOverlay } from '@/components/MapWrapper'
+import dynamic from 'next/dynamic'
 import shp from 'shpjs'
+
+// Direct dynamic import - bypass MapWrapper to test if wrapper is causing issues
+const InteractiveMap = dynamic(
+  () => import('@/components/InteractiveMap'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-lg">
+        <div className="text-gray-500">Loading map...</div>
+      </div>
+    )
+  }
+)
+
+// Import these separately since they're not the default export
+import { calculateDrawingMetrics } from '@/components/InteractiveMap'
+import type { ImageOverlay } from '@/components/InteractiveMap'
 
 interface MapMarker {
   id: string
