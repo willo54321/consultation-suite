@@ -752,8 +752,9 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
 
           {/* Map Container - matches working embed pattern */}
           <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6" style={{ height: '600px', width: '100%' }}>
-            {/* Map fills entire container */}
-            <InteractiveMap
+            {/* Map fills entire container with absolute positioning */}
+            <div className="absolute inset-0">
+              <InteractiveMap
               ref={mapRef}
               center={mapCenter}
               zoom={mapZoom}
@@ -775,6 +776,7 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
               onOverlayClick={(id: string) => setSelectedOverlayId(id)}
               onOverlayBoundsChange={updateOverlayBounds}
             />
+            </div>
 
             {/* Sidebar as overlay on top of map */}
             <div className={`absolute top-0 left-0 h-full bg-white border-r border-gray-200 flex flex-col z-10 transition-all duration-300 ${sidebarCollapsed ? 'w-12' : 'w-80'}`}>
