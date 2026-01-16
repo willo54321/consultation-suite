@@ -1011,10 +1011,9 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
               )}
             </div>
 
-            {/* Map */}
-            <div className="flex-1 relative min-h-0">
-              <div className="absolute inset-0">
-                <InteractiveMap
+            {/* Map - simplified container, no absolute positioning */}
+            <div className="flex-1" style={{ minHeight: 0 }}>
+              <InteractiveMap
                 ref={mapRef}
                 center={mapCenter}
                 zoom={mapZoom}
@@ -1036,7 +1035,6 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
                 onOverlayClick={(id: string) => setSelectedOverlayId(id)}
                 onOverlayBoundsChange={updateOverlayBounds}
               />
-              </div>
             </div>
           </div>
 
