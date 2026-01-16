@@ -10,11 +10,20 @@
 
 .gm-style {
   font-family: inherit;
+  min-height: 100% !important;
+  height: 100% !important;
 }
 
 /* Ensure map containers don't get affected by Tailwind resets */
 .gm-style * {
   box-sizing: content-box;
+}
+
+/* Force map container to fill parent */
+.map-container-600 {
+  width: 100% !important;
+  height: 600px !important;
+  min-height: 600px !important;
 }
 
 @layer base {

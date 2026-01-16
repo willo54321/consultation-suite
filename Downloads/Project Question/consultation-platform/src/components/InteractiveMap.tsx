@@ -415,6 +415,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
 
   return (
     <GoogleMap
+      mapContainerClassName="map-container-600"
       mapContainerStyle={{
         width: '100%',
         height: '600px',
