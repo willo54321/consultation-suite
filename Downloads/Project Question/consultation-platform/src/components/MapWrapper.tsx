@@ -26,7 +26,6 @@ const InteractiveMap = forwardRef<InteractiveMapRef, any>((props, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Use IntersectionObserver to detect when the map becomes visible
-  // This fixes issues with maps in tabbed interfaces where they load while hidden
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -36,7 +35,6 @@ const InteractiveMap = forwardRef<InteractiveMapRef, any>((props, ref) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isVisible) {
             setIsVisible(true);
-            // Force remount of map component when it first becomes visible
             setKey(prev => prev + 1);
           }
         });
@@ -51,8 +49,9 @@ const InteractiveMap = forwardRef<InteractiveMapRef, any>((props, ref) => {
     };
   }, [isVisible]);
 
+  // Simple wrapper - no extra positioning, just render the map
   return (
-    <div ref={containerRef} className="h-full w-full">
+    <div ref={containerRef} style={{ height: '100%', width: '100%' }}>
       {isVisible ? (
         <DynamicMap key={key} {...props} ref={ref} />
       ) : (
