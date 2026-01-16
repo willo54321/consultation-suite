@@ -424,10 +424,12 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
       center={mapCenter}
       zoom={zoom}
       options={{
+        mapTypeId: 'roadmap',
         mapTypeControl: true,
         streetViewControl: false,
         fullscreenControl: true,
-        zoomControl: true
+        zoomControl: true,
+        gestureHandling: 'greedy'
       }}
       onClick={handleMapClick}
       onLoad={onLoad}
