@@ -146,7 +146,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   onOverlayBoundsChange
 }, ref) => {
   const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script-interactive',  // Unique ID for interactive map
+    id: 'google-map-script-embed',  // Use same ID as working embed map
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES
   });
