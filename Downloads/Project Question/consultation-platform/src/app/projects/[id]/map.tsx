@@ -750,10 +750,10 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
             </div>
           )}
 
-          {/* Map Container - matches working embed pattern */}
+          {/* Map Container - explicit dimensions all the way down */}
           <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 mb-6" style={{ height: '600px', width: '100%' }}>
-            {/* Map fills entire container with absolute positioning */}
-            <div className="absolute inset-0">
+            {/* Map wrapper with explicit height (not percentage) */}
+            <div style={{ height: '600px', width: '100%' }}>
               <InteractiveMap
               ref={mapRef}
               center={mapCenter}
