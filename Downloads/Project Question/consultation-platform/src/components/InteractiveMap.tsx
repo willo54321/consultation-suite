@@ -405,7 +405,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
 
   if (!isLoaded) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-gray-100 rounded-lg">
+      <div style={{ position: 'absolute', inset: 0 }} className="flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-gray-500">
           {GOOGLE_MAPS_API_KEY ? 'Loading map...' : 'Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to enable map'}
         </div>
@@ -414,13 +414,15 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
   }
 
   return (
-    <div className="h-full w-full">
-      <GoogleMap
-        mapContainerStyle={{
-          height: '100%',
-          width: '100%',
-          cursor: isAddingMarker || isDrawingMode ? 'crosshair' : isDraggingOverlay ? 'grabbing' : 'grab'
-        }}
+    <GoogleMap
+      mapContainerStyle={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        cursor: isAddingMarker || isDrawingMode ? 'crosshair' : isDraggingOverlay ? 'grabbing' : 'grab'
+      }}
       center={mapCenter}
       zoom={zoom}
       options={{
@@ -715,7 +717,6 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
         ));
       })()}
     </GoogleMap>
-    </div>
   );
 });
 
