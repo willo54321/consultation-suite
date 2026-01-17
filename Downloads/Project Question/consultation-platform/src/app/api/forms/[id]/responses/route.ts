@@ -1,6 +1,18 @@
 import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
+// CORS headers for cross-origin form submissions
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
@@ -32,15 +44,27 @@ export async function POST(
     let email: string | null = null
     let name: string | null = null
 
-    // Find email and name fields
+    // Find email and name fields - check both by field.id and by label key
     for (const field of fields) {
-      const value = responseData[field.id]
+      const value = responseData[field.id] || responseData[field.label]
       if (!value) continue
 
       if (field.type === 'email' || field.label.toLowerCase().includes('email')) {
         email = value.toLowerCase()
       }
       if (field.label.toLowerCase().includes('name') && !field.label.toLowerCase().includes('email')) {
+        name = value
+      }
+    }
+
+    // Also check response data keys directly (for external form submissions)
+    for (const [key, value] of Object.entries(responseData)) {
+      if (!value || typeof value !== 'string') continue
+
+      if (key.toLowerCase() === 'email' && !email) {
+        email = value.toLowerCase()
+      }
+      if (key.toLowerCase() === 'name' && !name) {
         name = value
       }
     }
@@ -77,5 +101,5 @@ export async function POST(
     }
   }
 
-  return NextResponse.json(response)
+  return NextResponse.json(response, { headers: corsHeaders })
 }
