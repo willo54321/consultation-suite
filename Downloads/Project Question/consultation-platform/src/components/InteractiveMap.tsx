@@ -737,7 +737,7 @@ const InteractiveMap = forwardRef<InteractiveMapRef, InteractiveMapProps>(({
               position={{ lat: corner.lat, lng: corner.lng }}
               draggable={true}
               icon={createResizeHandleIcon()}
-              onDragEnd={(e) => handleCornerDrag(corner.id, selectedOverlay, e)}
+              onDrag={(e) => handleCornerDrag(corner.id, selectedOverlay, e)}
               zIndex={1001}
             />
           ))

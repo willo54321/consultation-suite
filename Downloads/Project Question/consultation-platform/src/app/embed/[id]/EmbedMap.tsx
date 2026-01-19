@@ -427,6 +427,7 @@ export default function EmbedMap({
         }}
         center={mapCenter}
         zoom={zoom}
+        mapTypeId={mapType}
         options={mapOptions}
         onClick={handleMapClick}
         onLoad={onLoad}
