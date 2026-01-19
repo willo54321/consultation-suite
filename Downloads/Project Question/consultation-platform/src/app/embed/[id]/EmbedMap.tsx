@@ -235,7 +235,11 @@ export default function EmbedMap({
     }
   }, [onShapeComplete])
 
+  const mapTypeRef = useRef(mapType)
+  mapTypeRef.current = mapType
+
   const onLoad = useCallback((map: google.maps.Map) => {
+    map.setMapTypeId(mapTypeRef.current)
     setMap(map)
   }, [])
 
@@ -243,13 +247,10 @@ export default function EmbedMap({
     setMap(null)
   }, [])
 
-  // Update map type when it changes - check current type to avoid unnecessary updates
+  // Update map type when it changes
   useEffect(() => {
     if (map) {
-      const currentType = map.getMapTypeId()
-      if (currentType !== mapType) {
-        map.setMapTypeId(mapType)
-      }
+      map.setMapTypeId(mapType)
     }
   }, [map, mapType])
 
