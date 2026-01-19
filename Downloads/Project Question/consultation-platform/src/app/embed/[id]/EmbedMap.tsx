@@ -49,6 +49,7 @@ interface EmbedMapProps {
   onVote: (pinId: string) => Promise<void>
   mapType: 'roadmap' | 'satellite'
   votedPins: Set<string>
+  animateToCenter?: boolean
 }
 
 const CATEGORY_CONFIG: Record<string, { color: string; bg: string; icon: any; label: string }> = {
@@ -173,7 +174,8 @@ export default function EmbedMap({
   onShapeComplete,
   onVote,
   mapType,
-  votedPins
+  votedPins,
+  animateToCenter = false
 }: EmbedMapProps) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script-embed',
@@ -234,11 +236,8 @@ export default function EmbedMap({
   }, [onShapeComplete])
 
   const onLoad = useCallback((map: google.maps.Map) => {
-    map.setCenter({ lat: center[0], lng: center[1] })
-    map.setZoom(zoom)
-    map.setMapTypeId(mapType)
     setMap(map)
-  }, [center, zoom, mapType])
+  }, [])
 
   const onUnmount = useCallback(() => {
     setMap(null)
@@ -251,29 +250,72 @@ export default function EmbedMap({
     }
   }, [map, mapType])
 
-  // Manage ground overlays
+  // Animate to new center/zoom when tour navigates
+  useEffect(() => {
+    if (map && animateToCenter) {
+      map.panTo({ lat: center[0], lng: center[1] })
+      // Smoothly animate zoom
+      const currentZoom = map.getZoom() || 15
+      if (currentZoom !== zoom) {
+        // Step-wise zoom for smoother animation
+        const zoomDiff = zoom - currentZoom
+        const steps = Math.abs(zoomDiff) <= 2 ? 1 : 2
+        const zoomStep = zoomDiff / steps
+        let step = 0
+
+        const zoomInterval = setInterval(() => {
+          step++
+          if (step >= steps) {
+            map.setZoom(zoom)
+            clearInterval(zoomInterval)
+          } else {
+            map.setZoom(currentZoom + zoomStep * step)
+          }
+        }, 200)
+      }
+    }
+  }, [map, center, zoom, animateToCenter])
+
+  // Manage ground overlays - only update what changed, don't recreate all
   useEffect(() => {
     if (!map) return
 
-    overlayRefs.current.forEach((overlay) => {
-      overlay.setMap(null)
+    // Create a set of current overlay IDs
+    const currentOverlayIds = new Set(overlays.map(o => o.id))
+
+    // Remove overlays that no longer exist
+    overlayRefs.current.forEach((overlay, id) => {
+      if (!currentOverlayIds.has(id)) {
+        overlay.setMap(null)
+        overlayRefs.current.delete(id)
+      }
     })
-    overlayRefs.current.clear()
 
+    // Add or update overlays
     overlays.forEach(overlay => {
-      const bounds = new google.maps.LatLngBounds(
-        { lat: overlay.bounds[0][0], lng: overlay.bounds[0][1] },
-        { lat: overlay.bounds[1][0], lng: overlay.bounds[1][1] }
-      )
+      const existingOverlay = overlayRefs.current.get(overlay.id)
 
-      const groundOverlay = new google.maps.GroundOverlay(
-        overlay.imageUrl,
-        bounds,
-        { opacity: overlay.opacity, clickable: false }
-      )
+      if (existingOverlay) {
+        // Update opacity if changed
+        if (existingOverlay.getOpacity() !== overlay.opacity) {
+          existingOverlay.setOpacity(overlay.opacity)
+        }
+      } else {
+        // Create new overlay
+        const bounds = new google.maps.LatLngBounds(
+          { lat: overlay.bounds[0][0], lng: overlay.bounds[0][1] },
+          { lat: overlay.bounds[1][0], lng: overlay.bounds[1][1] }
+        )
 
-      groundOverlay.setMap(map)
-      overlayRefs.current.set(overlay.id, groundOverlay)
+        const groundOverlay = new google.maps.GroundOverlay(
+          overlay.imageUrl,
+          bounds,
+          { opacity: overlay.opacity, clickable: false }
+        )
+
+        groundOverlay.setMap(map)
+        overlayRefs.current.set(overlay.id, groundOverlay)
+      }
     })
 
     return () => {
@@ -282,7 +324,7 @@ export default function EmbedMap({
       })
       overlayRefs.current.clear()
     }
-  }, [map, overlays])
+  }, [map, JSON.stringify(overlays.map(o => ({ id: o.id, opacity: o.opacity })))])
 
   // Update drawing manager mode when drawMode changes
   useEffect(() => {
@@ -356,9 +398,7 @@ export default function EmbedMap({
         }}
         center={mapCenter}
         zoom={zoom}
-        mapTypeId={mapType}
         options={{
-          mapTypeId: mapType,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
