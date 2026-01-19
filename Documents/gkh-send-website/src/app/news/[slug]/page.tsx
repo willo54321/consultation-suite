@@ -8,58 +8,15 @@ import { newsItems } from '@/components/NewsCarousel';
 
 // Extended content for news articles with richer structure
 const articleContent: Record<string, { intro: string; paragraphs: string[]; pullQuote?: string }> = {
-  'consultation-launches-january-2026': {
-    intro: 'We are delighted to announce the launch of our public consultation for the proposed Green Kite development. This marks an important milestone in our journey to create a sustainable, vibrant new community.',
+  'lorem-ipsum-article': {
+    intro: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
     paragraphs: [
-      'The consultation will run from January through to March 2026, giving local residents and stakeholders ample opportunity to view our proposals and share their feedback.',
-      'During this period, we will be hosting a series of public events, including community drop-in sessions, exhibition displays, and online webinars. These events are designed to give everyone the chance to learn more about the proposals and ask questions of the project team.',
-      'We believe that meaningful community engagement is essential to delivering a successful development. Your feedback will help shape the final proposals and ensure that the development responds to local needs and priorities.',
-      'To participate in the consultation, you can attend one of our events, visit our exhibition, or submit your comments through this website. We encourage everyone with an interest in the site to get involved.',
-      'Our team will be available throughout the consultation period to answer questions and discuss the proposals in detail. We are committed to listening to your views and taking them into account as we refine our plans.',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+      'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',
     ],
-    pullQuote: 'We believe that meaningful community engagement is essential to delivering a successful development.',
-  },
-  'community-event-announced': {
-    intro: 'Local residents are warmly invited to attend our upcoming community drop-in event, which will take place at the local community centre next month.',
-    paragraphs: [
-      'The event will provide an opportunity to meet the project team, view detailed plans and visualisations, and ask questions about the proposals. Our team of architects, planners, and landscape designers will be on hand to discuss the plans.',
-      'We understand that proposed developments can raise questions and concerns for local residents. This event is designed to provide clear information and give you the chance to share your views directly with the team.',
-      'Light refreshments will be provided, and the event is free to attend. No booking is required – simply drop in at any time during the event hours.',
-      'We look forward to meeting you and hearing your thoughts on our proposals. Your input is invaluable in helping us create a development that works for the whole community.',
-    ],
-    pullQuote: 'This event is designed to provide clear information and give you the chance to share your views directly with the team.',
-  },
-  'sustainable-design-approach': {
-    intro: 'Sustainability is at the heart of our proposals for the Green Kite development. We are committed to creating a development that minimises its environmental impact and contributes positively to the local ecosystem.',
-    paragraphs: [
-      'Our approach includes a range of sustainable design measures, from energy-efficient building design to renewable energy generation. All homes will be built to exceed current building regulations for energy efficiency.',
-      'We are also committed to achieving biodiversity net gain across the site. This means that the development will deliver a measurable improvement in biodiversity compared to the existing site conditions.',
-      'Our landscape strategy includes the creation of new wildlife habitats, native planting schemes, and green corridors that connect to the wider ecological network. We are working with ecologists to ensure that our proposals support local wildlife.',
-      'Water management is another key consideration. Our sustainable drainage strategy will manage surface water on-site, reducing flood risk and improving water quality.',
-      'By combining these measures, we aim to create a development that not only meets the needs of residents but also contributes to a more sustainable future for the whole community.',
-    ],
-    pullQuote: 'We are committed to achieving biodiversity net gain across the site.',
-  },
-  'affordable-housing-commitment': {
-    intro: 'We recognise the importance of delivering affordable housing to help meet local needs. Our proposals include a significant proportion of affordable homes, offering a mix of tenure types.',
-    paragraphs: [
-      'The affordable housing will be integrated throughout the development, ensuring that it is indistinguishable from the market housing. This approach helps to create a balanced, inclusive community.',
-      'We are working closely with the local authority and housing partners to ensure that the affordable housing meets local needs and is delivered to a high quality.',
-      'The mix of affordable housing will include homes for social rent, affordable rent, and shared ownership. This provides options for people at different stages of their housing journey.',
-      'All homes, whether affordable or market, will be built to the same high standards of design and sustainability. We believe that everyone deserves a well-designed, comfortable home.',
-    ],
-    pullQuote: 'All homes, whether affordable or market, will be built to the same high standards of design and sustainability.',
-  },
-  'landscape-masterplan-revealed': {
-    intro: 'We are pleased to reveal our landscape masterplan, which has been developed by an award-winning landscape architecture practice.',
-    paragraphs: [
-      'The masterplan creates a network of connected green spaces that weave through the development. These spaces provide areas for play, relaxation, and community gathering, as well as valuable wildlife habitat.',
-      'A central green spine runs through the heart of the development, providing a car-free route that connects homes to local amenities. This green corridor includes tree-lined paths, meadow areas, and play spaces.',
-      'The landscape design draws inspiration from the local landscape character, using native species and natural materials wherever possible. Existing trees and hedgerows will be retained and enhanced.',
-      'The masterplan also includes community growing spaces, giving residents the opportunity to grow their own food and connect with their neighbours.',
-      'We are confident that this landscape-led approach will create a truly special place to live, with nature woven into the fabric of everyday life.',
-    ],
-    pullQuote: 'A central green spine runs through the heart of the development, providing a car-free route that connects homes to local amenities.',
+    pullQuote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   },
 };
 

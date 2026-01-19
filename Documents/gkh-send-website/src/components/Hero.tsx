@@ -35,11 +35,11 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="sub-heading text-white/80 max-w-2xl mx-auto mb-12"
+          className="sub-heading text-white/80 max-w-3xl mx-auto mb-12"
         >
-          Green Kite Homes is developing a new residential community at Grove Heath North,
-          located off Portsmouth Road. We are consulting with residents of Ripley, Burntcommon,
-          and Send to gather feedback and refine our proposals.
+          Green Kite Homes is proposing a new mixed-use development at land known as Grove Heath North,
+          within the parish of Ripley, northwest of Send Marsh. We aim to hear the views of the local
+          community as we work towards submitting an outline planning application.
         </motion.p>
 
         <motion.div
@@ -48,10 +48,10 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <a href="/feedback" className="bg-[#025956] text-white px-8 py-4 font-medium tracking-wide uppercase text-sm hover:bg-[#037471] transition-all">
+          <a href="/feedback" className="bg-white text-[#025956] px-8 py-4 font-medium tracking-wide uppercase text-sm hover:bg-gray-100 transition-all">
             Have Your Say
           </a>
-          <a href="#about" className="bg-white text-[#025956] px-8 py-4 font-medium tracking-wide uppercase text-sm hover:bg-gray-100 transition-all">
+          <a href="#about" className="border-2 border-white text-white px-8 py-4 font-medium tracking-wide uppercase text-sm hover:bg-white/10 transition-all">
             Learn More
           </a>
         </motion.div>

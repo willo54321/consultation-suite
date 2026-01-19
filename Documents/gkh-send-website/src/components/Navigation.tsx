@@ -2,11 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, ArrowRight } from 'lucide-react';
+import { Menu, X, Search, ArrowRight, ChevronDown } from 'lucide-react';
+
+const proposalSubItems = [
+  { name: 'About the Site', href: '/proposals/about-the-site' },
+  { name: 'Sustainable Location', href: '/proposals/sustainable-location' },
+  { name: 'Our Vision', href: '/proposals/our-vision' },
+  { name: 'Our Proposals', href: '/proposals/our-proposals' },
+  { name: 'Landscape & Ecology', href: '/proposals/landscape-ecology' },
+  { name: 'Water Management', href: '/proposals/water-management' },
+  { name: 'Infrastructure', href: '/proposals/infrastructure' },
+  { name: 'Transport & Access', href: '/proposals/transport-access' },
+  { name: 'Timeline', href: '/proposals/timeline' },
+];
 
 const navItems = [
-  { name: 'About the Project', href: '/#about', hasSubmenu: false },
-  { name: 'Our Proposals', href: '/#vision', hasSubmenu: false },
+  { name: 'About', href: '/#about', hasSubmenu: false },
+  { name: 'Proposals', href: '/proposals', hasSubmenu: true, subItems: proposalSubItems },
+  { name: 'Interactive Map', href: '/map', hasSubmenu: true },
   { name: 'Have Your Say', href: '/feedback', hasSubmenu: true },
   { name: 'Documents', href: '/documents', hasSubmenu: true },
   { name: 'News', href: '/news', hasSubmenu: true },
@@ -16,6 +29,7 @@ const navItems = [
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -135,20 +149,64 @@ export default function Navigation() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.2 + index * 0.08 }}
                         >
-                          <a
-                            href={item.href}
-                            onClick={() => setIsMenuOpen(false)}
-                            className="group flex items-center justify-between py-2 text-white hover:text-white/70 transition-colors"
-                          >
-                            <span className="text-3xl md:text-4xl lg:text-5xl font-light heading-font">
-                              {item.name}
-                            </span>
-                            {item.hasSubmenu && (
-                              <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white/10 transition-colors ml-4">
-                                <ArrowRight size={20} />
+                          {item.subItems ? (
+                            <div>
+                              <button
+                                onClick={() => setExpandedItem(expandedItem === item.name ? null : item.name)}
+                                className="group flex items-center justify-between py-2 text-white hover:text-white/70 transition-colors w-full text-left"
+                              >
+                                <span className="text-3xl md:text-4xl lg:text-5xl font-light heading-font">
+                                  {item.name}
+                                </span>
+                                <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white/10 transition-colors ml-4">
+                                  <ChevronDown
+                                    size={20}
+                                    className={`transition-transform duration-300 ${expandedItem === item.name ? 'rotate-180' : ''}`}
+                                  />
+                                </span>
+                              </button>
+                              <AnimatePresence>
+                                {expandedItem === item.name && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="overflow-hidden ml-4 border-l border-white/20 pl-6"
+                                  >
+                                    {item.subItems.map((subItem, subIndex) => (
+                                      <motion.a
+                                        key={subItem.name}
+                                        href={subItem.href}
+                                        onClick={() => setIsMenuOpen(false)}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: subIndex * 0.05 }}
+                                        className="block py-2 text-lg md:text-xl text-white/80 hover:text-white transition-colors"
+                                      >
+                                        {subItem.name}
+                                      </motion.a>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          ) : (
+                            <a
+                              href={item.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className="group flex items-center justify-between py-2 text-white hover:text-white/70 transition-colors"
+                            >
+                              <span className="text-3xl md:text-4xl lg:text-5xl font-light heading-font">
+                                {item.name}
                               </span>
-                            )}
-                          </a>
+                              {item.hasSubmenu && (
+                                <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white/10 transition-colors ml-4">
+                                  <ArrowRight size={20} />
+                                </span>
+                              )}
+                            </a>
+                          )}
                         </motion.div>
                       ))}
                     </nav>

@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+:root {
+  /* Green Kite Brand Colors - EXACT */
+  --gk-green: #025956;
+  --gk-green-light: #037471;
+  --gk-green-pale: #e6f2f1;
+  --gk-dark: #1E1E1E;
+  --gk-cream: #F8F9F7;
+  --gk-white: #FFFFFF;
+  --gk-gray: #6B7280;
+  --gk-gray-light: #E5E7EB;
+
+  --background: var(--gk-white);
+  --foreground: var(--gk-dark);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gk-green: var(--gk-green);
+  --color-gk-green-light: var(--gk-green-light);
+  --color-gk-green-pale: var(--gk-green-pale);
+  --color-gk-dark: var(--gk-dark);
+  --color-gk-cream: var(--gk-cream);
+  --color-gk-gray: var(--gk-gray);
+  --color-gk-gray-light: var(--gk-gray-light);
+}
+
+/* Premium Typography */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "futura-pt", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* Headings - Calluna (Adobe Fonts) */
+h1, h2, h3, h4, h5, h6,
+.heading-font {
+  font-family: "calluna", Georgia, serif;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+/* Large Display Text - Earls Court Style */
+.display-heading {
+  font-family: "calluna", Georgia, serif;
+  font-size: clamp(2.5rem, 8vw, 4.2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.section-heading {
+  font-family: "calluna", Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.sub-heading {
+  font-family: "futura-pt", system-ui, sans-serif;
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Body text - Futura PT (Adobe Fonts) */
+.body-font {
+  font-family: "futura-pt", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Premium Button Styles */
+.btn-primary {
+  background-color: var(--gk-green);
+  color: white;
+  padding: 1rem 2.5rem;
+  font-family: "futura-pt", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--gk-green-light);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--gk-green);
+  padding: 1rem 2.5rem;
+  font-family: "futura-pt", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid var(--gk-green);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--gk-green);
+  color: white;
+}
+
+/* Section Spacing - Earls Court Style */
+.section-padding {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+/* Smooth reveal animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Tab active indicator */
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background-color: var(--gk-green);
+  transition: all 0.3s ease;
+}
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
