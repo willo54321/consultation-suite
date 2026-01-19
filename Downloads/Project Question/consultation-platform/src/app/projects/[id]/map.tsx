@@ -466,70 +466,23 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
     setPendingDrawing(null)
   }
 
-  const handleOverlayUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOverlayUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setOverlayError(null)
 
-    // Check file size - warn if over 2MB (will be larger as base64)
+    // Check file size - Vercel has 4.5MB body limit, base64 adds ~33% overhead
+    // So original file should be under ~3MB to be safe
     if (file.size > 3 * 1024 * 1024) {
-      setOverlayError('Image is large. Compressing...')
+      setOverlayError('Image too large. Please use an image under 3MB.')
+      e.target.value = ''
+      return
     }
 
-    try {
-      // Compress image using canvas
-      const compressImage = (file: File, maxWidth = 2000, quality = 0.8): Promise<string> => {
-        return new Promise((resolve, reject) => {
-          const img = document.createElement('img')
-          const reader = new FileReader()
-
-          reader.onload = (e) => {
-            img.src = e.target?.result as string
-          }
-
-          img.onload = () => {
-            const canvas = document.createElement('canvas')
-            let { width, height } = img
-
-            // Scale down if too large
-            if (width > maxWidth) {
-              height = (height * maxWidth) / width
-              width = maxWidth
-            }
-
-            canvas.width = width
-            canvas.height = height
-
-            const ctx = canvas.getContext('2d')
-            if (!ctx) {
-              reject(new Error('Could not get canvas context'))
-              return
-            }
-
-            ctx.drawImage(img, 0, 0, width, height)
-
-            // Convert to JPEG for better compression
-            const dataUrl = canvas.toDataURL('image/jpeg', quality)
-            resolve(dataUrl)
-          }
-
-          img.onerror = () => reject(new Error('Failed to load image'))
-          reader.onerror = () => reject(new Error('Failed to read file'))
-          reader.readAsDataURL(file)
-        })
-      }
-
-      // Compress the image
-      const imageUrl = await compressImage(file)
-
-      // Check compressed size (base64 adds ~33% overhead)
-      if (imageUrl.length > 4 * 1024 * 1024) {
-        setOverlayError('Image still too large after compression. Please use a smaller image (under 3MB).')
-        e.target.value = ''
-        return
-      }
-
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const imageUrl = event.target?.result as string
       const tempId = Date.now().toString()
       const newOverlay: ImageOverlay = {
         id: tempId,
@@ -542,17 +495,16 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
         opacity: 0.7,
         visible: true,
       }
-
-      setOverlayError(null)
       // Optimistically add to local state
       setOverlays([...overlays, newOverlay])
       setSelectedOverlayId(tempId)
       // Save to database
       createOverlay.mutate({ ...newOverlay, tempId } as any)
-    } catch (err) {
-      setOverlayError('Failed to process image. Please try a different file.')
     }
-
+    reader.onerror = () => {
+      setOverlayError('Failed to read image file.')
+    }
+    reader.readAsDataURL(file)
     e.target.value = ''
   }
 
