@@ -243,10 +243,13 @@ export default function EmbedMap({
     setMap(null)
   }, [])
 
-  // Update map type when it changes
+  // Update map type when it changes - check current type to avoid unnecessary updates
   useEffect(() => {
     if (map) {
-      map.setMapTypeId(mapType)
+      const currentType = map.getMapTypeId()
+      if (currentType !== mapType) {
+        map.setMapTypeId(mapType)
+      }
     }
   }, [map, mapType])
 
