@@ -340,9 +340,8 @@ export default function EmbedMap({
     }
   }, [drawMode])
 
-  // Memoize map options to prevent re-renders from recreating the object
+  // Memoize map options - keep stable, mapType is controlled via useEffect
   const mapOptions = useMemo(() => ({
-    mapTypeId: mapType,
     mapTypeControl: false,
     mapTypeControlOptions: {
       mapTypeIds: [] // Empty array to fully disable
@@ -355,8 +354,12 @@ export default function EmbedMap({
     panControl: false,
     tilt: 0,
     gestureHandling: 'greedy',
-    disableDefaultUI: true
-  }), [mapType])
+    disableDefaultUI: true,
+    draggable: true,
+    scrollwheel: true,
+    draggableCursor: 'grab',
+    draggingCursor: 'grabbing'
+  }), [])
 
   // Drawing manager options - always available
   const drawingManagerOptions = useMemo(() => ({
@@ -419,8 +422,7 @@ export default function EmbedMap({
       <GoogleMap
         mapContainerStyle={{
           height: '100%',
-          width: '100%',
-          cursor: drawMode ? 'crosshair' : 'grab'
+          width: '100%'
         }}
         center={mapCenter}
         zoom={zoom}
