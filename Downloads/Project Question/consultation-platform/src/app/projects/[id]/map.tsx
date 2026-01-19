@@ -105,6 +105,8 @@ interface Project {
   id: string
   name: string
   embedEnabled: boolean
+  allowPins: boolean
+  allowDrawing: boolean
   latitude: number | null
   longitude: number | null
   mapZoom: number | null
@@ -230,21 +232,32 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
 
 
   // Overlay mutations
+  const [overlayError, setOverlayError] = useState<string | null>(null)
   const createOverlay = useMutation({
-    mutationFn: async (overlay: ImageOverlay) => {
+    mutationFn: async (overlay: ImageOverlay & { tempId?: string }) => {
       const response = await fetch(`/api/projects/${projectId}/overlays`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(overlay)
       })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save overlay')
+      }
       return response.json()
     },
     onSuccess: (data) => {
+      setOverlayError(null)
       // Update local state with the server-assigned ID
       setOverlays(prev => prev.map(o =>
         o.id === data.tempId ? { ...o, id: data.id } : o
       ))
       queryClient.invalidateQueries({ queryKey: ['project', projectId] })
+    },
+    onError: (error: Error) => {
+      setOverlayError(error.message)
+      // Remove the optimistically added overlay
+      setOverlays(prev => prev.filter(o => !o.id.startsWith('temp-') && !o.id.match(/^\d+$/)))
     }
   })
 
@@ -827,11 +840,23 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
                   {sidebarMode === 'overlays' && (
                     <>
                       <div className="p-3 border-b border-gray-100">
-                        <label className="flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
-                          <Upload size={18} className="text-gray-400" />
-                          <span className="text-sm text-gray-600">Add Overlay</span>
-                          <input type="file" accept="image/*" onChange={handleOverlayUpload} className="hidden" />
+                        <label className={`flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors ${createOverlay.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
+                          {createOverlay.isPending ? (
+                            <>
+                              <span className="animate-spin w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full" />
+                              <span className="text-sm text-gray-600">Saving...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload size={18} className="text-gray-400" />
+                              <span className="text-sm text-gray-600">Add Overlay</span>
+                            </>
+                          )}
+                          <input type="file" accept="image/*" onChange={handleOverlayUpload} className="hidden" disabled={createOverlay.isPending} />
                         </label>
+                        {overlayError && (
+                          <p className="text-xs text-red-600 mt-2 text-center">{overlayError}</p>
+                        )}
                       </div>
 
                       <div className="flex-1 overflow-y-auto p-3 space-y-2">
@@ -1110,16 +1135,17 @@ export function MapTab({ projectId, project }: { projectId: string; project: Pro
 // Separate Embed Settings Tab Component
 export function EmbedSettingsTab({ projectId, project }: { projectId: string; project: Project }) {
   const queryClient = useQueryClient()
-  const [copied, setCopied] = useState(false)
-  const [toggling, setToggling] = useState(false)
+  const [copiedFeedback, setCopiedFeedback] = useState(false)
+  const [copiedTour, setCopiedTour] = useState(false)
+  const [toggling, setToggling] = useState<string | null>(null)
 
-  const toggleEmbed = useMutation({
-    mutationFn: async () => {
-      setToggling(true)
+  const toggleSetting = useMutation({
+    mutationFn: async (setting: { key: string; value: boolean }) => {
+      setToggling(setting.key)
       const response = await fetch(`/api/projects/${projectId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embedEnabled: !project.embedEnabled })
+        body: JSON.stringify({ [setting.key]: setting.value })
       })
       return response.json()
     },
@@ -1127,16 +1153,20 @@ export function EmbedSettingsTab({ projectId, project }: { projectId: string; pr
       queryClient.invalidateQueries({ queryKey: ['project', projectId] })
     },
     onSettled: () => {
-      setToggling(false)
+      setToggling(null)
     }
   })
 
-  const embedUrl = typeof window !== 'undefined'
+  const feedbackEmbedUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/embed/${projectId}`
     : `/embed/${projectId}`
 
-  const embedCode = `<iframe
-  src="${embedUrl}"
+  const tourEmbedUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/embed/${projectId}/tour`
+    : `/embed/${projectId}/tour`
+
+  const feedbackEmbedCode = `<iframe
+  src="${feedbackEmbedUrl}"
   width="100%"
   height="600"
   frameborder="0"
@@ -1144,11 +1174,27 @@ export function EmbedSettingsTab({ projectId, project }: { projectId: string; pr
   style="border: 1px solid #e5e7eb; border-radius: 8px;"
 ></iframe>`
 
-  const copyCode = () => {
-    navigator.clipboard.writeText(embedCode)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  const tourEmbedCode = `<iframe
+  src="${tourEmbedUrl}"
+  width="100%"
+  height="600"
+  frameborder="0"
+  style="border: 1px solid #e5e7eb; border-radius: 8px;"
+></iframe>`
+
+  const copyFeedbackCode = () => {
+    navigator.clipboard.writeText(feedbackEmbedCode)
+    setCopiedFeedback(true)
+    setTimeout(() => setCopiedFeedback(false), 2000)
   }
+
+  const copyTourCode = () => {
+    navigator.clipboard.writeText(tourEmbedCode)
+    setCopiedTour(true)
+    setTimeout(() => setCopiedTour(false), 2000)
+  }
+
+  const hasTours = (project as any).tours?.length > 0
 
   return (
     <div className="space-y-6">
@@ -1170,11 +1216,11 @@ export function EmbedSettingsTab({ projectId, project }: { projectId: string; pr
             </div>
           </div>
           <button
-            onClick={() => toggleEmbed.mutate()}
-            disabled={toggling}
+            onClick={() => toggleSetting.mutate({ key: 'embedEnabled', value: !project.embedEnabled })}
+            disabled={toggling === 'embedEnabled'}
             className={`relative w-14 h-7 rounded-full transition-colors ${
               project.embedEnabled ? 'bg-green-500' : 'bg-gray-300'
-            } ${toggling ? 'opacity-50' : ''}`}
+            } ${toggling === 'embedEnabled' ? 'opacity-50' : ''}`}
           >
             <span
               className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${
@@ -1185,37 +1231,138 @@ export function EmbedSettingsTab({ projectId, project }: { projectId: string; pr
         </div>
 
         {project.embedEnabled && (
-          <div className="mt-6 pt-6 border-t">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Code size={18} className="text-gray-400" />
-                <span className="font-medium text-sm text-gray-700">Embed Code</span>
-              </div>
-              <div className="flex gap-2">
-                <a
-                  href={embedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
-                >
-                  <ExternalLink size={14} /> Preview
-                </a>
+          <>
+            {/* Interaction Settings */}
+            <div className="mt-6 pt-6 border-t space-y-4">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Interaction Settings</p>
+
+              {/* Allow Pins Toggle */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                    <MapPinned size={20} className="text-gray-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Allow Pin Comments</p>
+                    <p className="text-sm text-gray-500">Visitors can drop pins and leave comments</p>
+                  </div>
+                </div>
                 <button
-                  onClick={copyCode}
-                  className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
+                  onClick={() => toggleSetting.mutate({ key: 'allowPins', value: !project.allowPins })}
+                  disabled={toggling === 'allowPins'}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    project.allowPins ? 'bg-brand-500' : 'bg-gray-300'
+                  } ${toggling === 'allowPins' ? 'opacity-50' : ''}`}
                 >
-                  {copied ? <Check size={14} /> : <Copy size={14} />}
-                  {copied ? 'Copied!' : 'Copy'}
+                  <span
+                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                      project.allowPins ? 'left-6' : 'left-0.5'
+                    }`}
+                  />
                 </button>
               </div>
+
+              {/* Allow Drawing Toggle */}
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                    <Pentagon size={20} className="text-gray-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Allow Shape Drawing</p>
+                    <p className="text-sm text-gray-500">Visitors can draw areas on the map</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => toggleSetting.mutate({ key: 'allowDrawing', value: !project.allowDrawing })}
+                  disabled={toggling === 'allowDrawing'}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    project.allowDrawing ? 'bg-brand-500' : 'bg-gray-300'
+                  } ${toggling === 'allowDrawing' ? 'opacity-50' : ''}`}
+                >
+                  <span
+                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                      project.allowDrawing ? 'left-6' : 'left-0.5'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {!project.allowPins && !project.allowDrawing && (
+                <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
+                  Both interactions are disabled. The map will be view-only (reference mode).
+                </p>
+              )}
             </div>
-            <pre className="bg-gray-900 text-gray-100 text-sm p-4 rounded-lg overflow-x-auto">
-              <code>{embedCode}</code>
-            </pre>
-            <p className="text-sm text-gray-500 mt-4">
-              Paste this code into your website's HTML where you want the consultation map to appear.
-            </p>
-          </div>
+
+            {/* Feedback Map Embed Code */}
+            <div className="mt-6 pt-6 border-t">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Code size={18} className="text-gray-400" />
+                  <span className="font-medium text-sm text-gray-700">Feedback Map Embed</span>
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    href={feedbackEmbedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
+                  >
+                    <ExternalLink size={14} /> Preview
+                  </a>
+                  <button
+                    onClick={copyFeedbackCode}
+                    className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
+                  >
+                    {copiedFeedback ? <Check size={14} /> : <Copy size={14} />}
+                    {copiedFeedback ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+              <pre className="bg-gray-900 text-gray-100 text-sm p-4 rounded-lg overflow-x-auto">
+                <code>{feedbackEmbedCode}</code>
+              </pre>
+              <p className="text-sm text-gray-500 mt-3">
+                Embed the feedback map to collect public comments and feedback.
+              </p>
+            </div>
+
+            {/* Tour Embed Code */}
+            <div className="mt-6 pt-6 border-t">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Code size={18} className="text-gray-400" />
+                  <span className="font-medium text-sm text-gray-700">Guided Tour Embed</span>
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    href={tourEmbedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
+                  >
+                    <ExternalLink size={14} /> Preview
+                  </a>
+                  <button
+                    onClick={copyTourCode}
+                    className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700"
+                  >
+                    {copiedTour ? <Check size={14} /> : <Copy size={14} />}
+                    {copiedTour ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+              <pre className="bg-gray-900 text-gray-100 text-sm p-4 rounded-lg overflow-x-auto">
+                <code>{tourEmbedCode}</code>
+              </pre>
+              <p className="text-sm text-gray-500 mt-3">
+                {hasTours
+                  ? 'Embed the guided tour to showcase your masterplan with an interactive walkthrough.'
+                  : 'Create a tour in the Tours tab to enable this embed.'}
+              </p>
+            </div>
+          </>
         )}
       </div>
 
