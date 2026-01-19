@@ -340,6 +340,24 @@ export default function EmbedMap({
     }
   }, [drawMode])
 
+  // Memoize map options to prevent re-renders from recreating the object
+  const mapOptions = useMemo(() => ({
+    mapTypeId: mapType,
+    mapTypeControl: false,
+    mapTypeControlOptions: {
+      mapTypeIds: [] // Empty array to fully disable
+    },
+    streetViewControl: false,
+    fullscreenControl: false,
+    zoomControl: false,
+    scaleControl: false,
+    rotateControl: false,
+    panControl: false,
+    tilt: 0,
+    gestureHandling: 'greedy',
+    disableDefaultUI: true
+  }), [mapType])
+
   // Drawing manager options - always available
   const drawingManagerOptions = useMemo(() => ({
     drawingMode: null as google.maps.drawing.OverlayType | null,
@@ -389,7 +407,12 @@ export default function EmbedMap({
         .gm-style .gmnoprint,
         .gm-style .gm-fullscreen-control,
         .gm-style [class*="gm-control"],
-        .gm-style .gm-svpc {
+        .gm-style .gm-svpc,
+        .gm-style .gm-style-mtc,
+        .gm-style [aria-label="Map Type"],
+        .gm-style [aria-label="Show street map"],
+        .gm-style [aria-label="Show satellite imagery"],
+        .gm-style button[title="Change map style"] {
           display: none !important;
         }
       `}</style>
@@ -401,18 +424,7 @@ export default function EmbedMap({
         }}
         center={mapCenter}
         zoom={zoom}
-        options={{
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-          zoomControl: false,
-          scaleControl: false,
-          rotateControl: false,
-          panControl: false,
-          tilt: 0,
-          gestureHandling: 'greedy',
-          disableDefaultUI: true
-        }}
+        options={mapOptions}
         onClick={handleMapClick}
         onLoad={onLoad}
         onUnmount={onUnmount}
