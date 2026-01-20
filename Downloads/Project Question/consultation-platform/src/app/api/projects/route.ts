@@ -3,7 +3,12 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const projects = await prisma.project.findMany({
+    // Add timeout to prevent hanging on database connection issues
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
+    )
+
+    const queryPromise = prisma.project.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
         _count: {
@@ -15,11 +20,14 @@ export async function GET() {
         },
       },
     })
+
+    const projects = await Promise.race([queryPromise, timeoutPromise])
     return NextResponse.json(projects)
   } catch (error) {
     console.error('Failed to fetch projects:', error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: 'Failed to load projects. Please check database connection.' },
+      { error: `Failed to load projects: ${message}` },
       { status: 500 }
     )
   }
