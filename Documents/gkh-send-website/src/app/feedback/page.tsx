@@ -120,7 +120,7 @@ export default function FeedbackPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="sub-heading text-white/70 mt-6 max-w-2xl"
             >
-              Share your feedback on our proposals for Grove Heath North. Your views will help shape the final design of this development.
+              Share your feedback on our proposals for Grove Heath North. Your views will help shape the plans for this development as we move towards submitting an outline planning application.
             </motion.p>
           </div>
         </section>
