@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[65135,["/_next/static/chunks/f3dc9d61aac91845.js","/_next/static/chunks/affe357619fa947d.js","/_next/static/chunks/2329013676bdb456.js"],"default"]
-3:I[22599,["/_next/static/chunks/1609e45d36bee998.js","/_next/static/chunks/4ff95bb6da790f17.js"],"OutletBoundary"]
+2:I[65135,["/consultation-suite/_next/static/chunks/f3dc9d61aac91845.js","/consultation-suite/_next/static/chunks/affe357619fa947d.js","/consultation-suite/_next/static/chunks/2329013676bdb456.js"],"default"]
+3:I[22599,["/consultation-suite/_next/static/chunks/1609e45d36bee998.js","/consultation-suite/_next/static/chunks/4ff95bb6da790f17.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"vE1t1ty2MjSHtL-RjnL9X","rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"lorem-ipsum-article"}],[["$","script","script-0",{"src":"/_next/static/chunks/2329013676bdb456.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"xW9hQMt4IAU0owThOLgng","rsc":["$","$1","c",{"children":[["$","$L2",null,{"slug":"lorem-ipsum-article"}],[["$","script","script-0",{"src":"/consultation-suite/_next/static/chunks/2329013676bdb456.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
