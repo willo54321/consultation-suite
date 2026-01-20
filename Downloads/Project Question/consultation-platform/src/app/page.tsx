@@ -27,9 +27,16 @@ export default function Home() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const { canCreateProject, canDeleteProject } = usePermissions()
 
-  const { data: projects, isLoading } = useQuery<Project[]>({
+  const { data: projects, isLoading, isError, error } = useQuery<Project[]>({
     queryKey: ['projects'],
-    queryFn: () => fetch('/api/projects').then(r => r.json()),
+    queryFn: async () => {
+      const r = await fetch('/api/projects')
+      if (!r.ok) {
+        const errorText = await r.text()
+        throw new Error(errorText || `HTTP ${r.status}`)
+      }
+      return r.json()
+    },
   })
 
   const deleteProject = useMutation({
@@ -98,6 +105,23 @@ export default function Home() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : isError ? (
+            /* Error state */
+            <div className="card p-12 text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">⚠️</span>
+              </div>
+              <h3 className="text-lg font-medium text-slate-900 mb-2">Failed to load projects</h3>
+              <p className="text-slate-600 mb-4 max-w-sm mx-auto">
+                {error instanceof Error ? error.message : 'An error occurred while loading projects.'}
+              </p>
+              <button
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['projects'] })}
+                className="btn-secondary"
+              >
+                Try Again
+              </button>
             </div>
           ) : projects?.length === 0 ? (
             /* Empty state */

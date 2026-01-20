@@ -2,19 +2,27 @@ import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      _count: {
-        select: {
-          stakeholders: true,
-          feedbackForms: true,
-          mapMarkers: true,
+  try {
+    const projects = await prisma.project.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: {
+          select: {
+            stakeholders: true,
+            feedbackForms: true,
+            mapMarkers: true,
+          },
         },
       },
-    },
-  })
-  return NextResponse.json(projects)
+    })
+    return NextResponse.json(projects)
+  } catch (error) {
+    console.error('Failed to fetch projects:', error)
+    return NextResponse.json(
+      { error: 'Failed to load projects. Please check database connection.' },
+      { status: 500 }
+    )
+  }
 }
 
 export async function POST(request: Request) {
