@@ -19,7 +19,7 @@ export default function LoginPage() {
       const result = await signIn('resend', {
         email,
         redirect: false,
-        callbackUrl: '/',
+        callbackUrl: '/projects',
       })
 
       if (result?.error) {

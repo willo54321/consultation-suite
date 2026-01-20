@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { MessageCircle, ThumbsUp, ThumbsDown, X, Send, MapPin, ChevronLeft, ChevronRight, Lightbulb, Pentagon } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { MessageCircle, ThumbsUp, ThumbsDown, X, Send, MapPin, ChevronLeft, ChevronRight, Lightbulb, Pentagon, Play } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import { TourPlayer, StartTourButton } from './TourPlayer'
 
 const EmbedMap = dynamic(() => import('./EmbedMap'), {
   ssr: false,
@@ -40,6 +41,26 @@ interface Overlay {
   opacity: number
 }
 
+interface TourStop {
+  id: string
+  order: number
+  title: string
+  description: string
+  imageUrl: string | null
+  latitude: number
+  longitude: number
+  zoom: number
+  highlight: unknown | null
+  showOverlay: string | null
+}
+
+interface Tour {
+  id: string
+  name: string
+  description: string | null
+  stops: TourStop[]
+}
+
 interface ProjectData {
   id: string
   name: string
@@ -47,8 +68,11 @@ interface ProjectData {
   latitude: number | null
   longitude: number | null
   mapZoom: number | null
+  allowPins: boolean
+  allowDrawing: boolean
   overlays: Overlay[]
   pins: PublicPin[]
+  tour: Tour | null
 }
 
 // Shape types for drawing
@@ -100,6 +124,11 @@ export default function EmbedPage({ params }: { params: { id: string } }) {
   })
   const [mapType, setMapType] = useState<'roadmap' | 'satellite'>('satellite')
   const [votedPins, setVotedPins] = useState<Set<string>>(new Set())
+
+  // Tour state
+  const [isTourActive, setIsTourActive] = useState(false)
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [mapZoom, setMapZoom] = useState<number | null>(null)
 
   // Load voted pins from localStorage on mount
   useEffect(() => {
@@ -242,6 +271,25 @@ export default function EmbedPage({ params }: { params: { id: string } }) {
     }))
   }
 
+  // Tour navigation handler
+  const handleTourNavigate = useCallback((lat: number, lng: number, zoom: number) => {
+    setMapCenter({ lat, lng })
+    setMapZoom(zoom)
+  }, [])
+
+  const handleTourClose = () => {
+    setIsTourActive(false)
+    // Reset map to original position
+    setMapCenter(null)
+    setMapZoom(null)
+  }
+
+  const handleStartTour = () => {
+    setIsTourActive(true)
+    // Collapse sidebar when tour starts
+    setSidebarCollapsed(true)
+  }
+
   const getCategoryCount = (categoryId: string) => {
     if (!project) return 0
     return project.pins.filter(p => p.category === categoryId).length
@@ -309,8 +357,8 @@ export default function EmbedPage({ params }: { params: { id: string } }) {
       <div className="h-screen w-screen relative overflow-hidden" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Map fills entire screen */}
         <EmbedMap
-          center={center}
-          zoom={project.mapZoom || 15}
+          center={mapCenter ? [mapCenter.lat, mapCenter.lng] : center}
+          zoom={mapZoom || project.mapZoom || 15}
           overlays={project.overlays}
           pins={filteredPins}
           pendingPin={pendingShape?.type === 'pin' ? { lat: pendingShape.lat!, lng: pendingShape.lng! } : null}
@@ -322,48 +370,55 @@ export default function EmbedPage({ params }: { params: { id: string } }) {
           onVote={handleVote}
           mapType={mapType}
           votedPins={votedPins}
+          animateToCenter={mapCenter !== null}
         />
 
-        {/* Feedback Buttons - Top Right */}
-        <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-          {/* Add Pin Button */}
-          <button
-            onClick={() => {
-              if (drawMode === 'pin') {
-                cancelDrawing()
-              } else {
-                setDrawMode('pin')
-              }
-            }}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium shadow-lg transition-all ${
-              drawMode === 'pin'
-                ? 'bg-brand-700 text-white ring-2 ring-brand-300'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-            }`}
-          >
-            <MapPin size={18} />
-            <span>Add Pin</span>
-          </button>
+        {/* Feedback Buttons - Top Right (only if pins or drawing allowed) */}
+        {(project.allowPins || project.allowDrawing) && (
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+            {/* Add Pin Button */}
+            {project.allowPins && (
+              <button
+                onClick={() => {
+                  if (drawMode === 'pin') {
+                    cancelDrawing()
+                  } else {
+                    setDrawMode('pin')
+                  }
+                }}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium shadow-lg transition-all ${
+                  drawMode === 'pin'
+                    ? 'bg-brand-700 text-white ring-2 ring-brand-300'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                }`}
+              >
+                <MapPin size={18} />
+                <span>Add Pin</span>
+              </button>
+            )}
 
-          {/* Draw Area Button */}
-          <button
-            onClick={() => {
-              if (drawMode === 'polygon') {
-                cancelDrawing()
-              } else {
-                setDrawMode('polygon')
-              }
-            }}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium shadow-lg transition-all ${
-              drawMode === 'polygon'
-                ? 'bg-brand-700 text-white ring-2 ring-brand-300'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-            }`}
-          >
-            <Pentagon size={18} />
-            <span>Draw Area</span>
-          </button>
-        </div>
+            {/* Draw Area Button */}
+            {project.allowDrawing && (
+              <button
+                onClick={() => {
+                  if (drawMode === 'polygon') {
+                    cancelDrawing()
+                  } else {
+                    setDrawMode('polygon')
+                  }
+                }}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium shadow-lg transition-all ${
+                  drawMode === 'polygon'
+                    ? 'bg-brand-700 text-white ring-2 ring-brand-300'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                }`}
+              >
+                <Pentagon size={18} />
+                <span>Draw Area</span>
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Instruction Banner - Top Center (when drawing) */}
         {drawMode && !showForm && (
@@ -449,6 +504,22 @@ export default function EmbedPage({ params }: { params: { id: string } }) {
         >
           {mapType === 'satellite' ? 'Map' : 'Satellite'}
         </button>
+
+        {/* Tour Button - Bottom Left (only if tour exists and has stops) */}
+        {project.tour && project.tour.stops.length > 0 && !isTourActive && !showForm && !drawMode && (
+          <div className="absolute bottom-4 left-4 z-10">
+            <StartTourButton onClick={handleStartTour} />
+          </div>
+        )}
+
+        {/* Tour Player */}
+        {project.tour && isTourActive && (
+          <TourPlayer
+            tour={project.tour}
+            onNavigate={handleTourNavigate}
+            onClose={handleTourClose}
+          />
+        )}
 
         {/* Feedback Form Modal */}
         {showForm && pendingShape && (

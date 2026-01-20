@@ -134,11 +134,11 @@ async function collectFeedback(projectId: string): Promise<FeedbackItem[]> {
     form.responses.forEach(response => {
       const data = response.data as Record<string, unknown>
 
-      // Extract text content from response
+      // Extract text content from response - check both by field.id and field.label
       const textContent = fields
         .filter(f => ['text', 'textarea'].includes(f.type))
         .map(f => {
-          const value = data[f.id]
+          const value = data[f.id] || data[f.label]
           if (value && typeof value === 'string') {
             return `${f.label}: ${value}`
           }
@@ -147,11 +147,23 @@ async function collectFeedback(projectId: string): Promise<FeedbackItem[]> {
         .filter(Boolean)
         .join('. ')
 
-      if (textContent) {
+      // Also capture any text fields submitted directly by label (for external forms)
+      const directTextContent = Object.entries(data)
+        .filter(([key, value]) => {
+          // Skip if already captured via fields
+          const isFieldKey = fields.some(f => f.id === key || f.label === key)
+          return typeof value === 'string' && value.length > 10 && !isFieldKey
+        })
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('. ')
+
+      const combinedContent = [textContent, directTextContent].filter(Boolean).join('. ')
+
+      if (combinedContent) {
         feedbackItems.push({
           id: response.id,
           type: 'form',
-          content: textContent,
+          content: combinedContent,
           createdAt: response.submittedAt,
         })
       }

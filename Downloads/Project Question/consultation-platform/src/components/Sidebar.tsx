@@ -5,23 +5,31 @@ import { usePathname } from 'next/navigation'
 import {
   FolderOpen,
   MapPin,
+  Users,
   LucideIcon,
 } from 'lucide-react'
 import UserMenu from './UserMenu'
+import { usePermissions } from '@/hooks/usePermissions'
 
 interface NavItem {
   label: string
   href: string
   icon: LucideIcon
   badge?: number
+  adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
-  { label: 'Projects', href: '/', icon: FolderOpen },
+  { label: 'Projects', href: '/projects', icon: FolderOpen },
+  { label: 'Users', href: '/admin/users', icon: Users, adminOnly: true },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { isSuperAdmin } = usePermissions()
+
+  // Filter nav items based on permissions
+  const visibleNavItems = navItems.filter(item => !item.adminOnly || isSuperAdmin)
 
   return (
     <aside className="sidebar flex flex-col">
@@ -36,7 +44,7 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="sidebar-nav flex-1">
         <ul className="space-y-1">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href))
             const Icon = item.icon

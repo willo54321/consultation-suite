@@ -1,7 +1,7 @@
 'use client'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MockAuthProvider } from '@/contexts/MockAuthContext'
+import { SessionProvider } from 'next-auth/react'
 import { Toaster } from 'sonner'
 import { useState } from 'react'
 
@@ -9,7 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient())
 
   return (
-    <MockAuthProvider>
+    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         {children}
         <Toaster
@@ -24,6 +24,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           }}
         />
       </QueryClientProvider>
-    </MockAuthProvider>
+    </SessionProvider>
   )
 }

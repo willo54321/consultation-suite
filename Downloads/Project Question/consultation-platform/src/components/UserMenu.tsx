@@ -1,18 +1,17 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useMockAuth } from '@/contexts/MockAuthContext'
-import { UserRole } from '@/lib/mock-auth'
-import { User, Shield, Eye, ChevronDown } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
+import Link from 'next/link'
+import { User, Shield, ChevronDown, LogOut, Users } from 'lucide-react'
 
-const ROLE_CONFIG: Record<UserRole, { label: string; color: string; icon: typeof Shield }> = {
-  admin: { label: 'Admin', color: 'bg-brand-600', icon: Shield },
-  user: { label: 'User', color: 'bg-blue-600', icon: User },
-  viewer: { label: 'Viewer', color: 'bg-slate-500', icon: Eye },
+const ROLE_CONFIG = {
+  SUPER_ADMIN: { label: 'Super Admin', color: 'bg-purple-600', icon: Shield },
+  USER: { label: 'User', color: 'bg-slate-500', icon: User },
 }
 
 export default function UserMenu() {
-  const { user, role, setRole } = useMockAuth()
+  const { data: session, status } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -27,72 +26,87 @@ export default function UserMenu() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const currentConfig = ROLE_CONFIG[role]
-  const Icon = currentConfig.icon
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200">
+        <div className="w-6 h-6 rounded-full bg-slate-200 animate-pulse" />
+        <div className="w-16 h-4 bg-slate-200 rounded animate-pulse" />
+      </div>
+    )
+  }
+
+  if (!session?.user) {
+    return (
+      <Link
+        href="/login"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
+      >
+        <User className="w-4 h-4 text-slate-500" />
+        <span className="text-sm font-medium text-slate-700">Sign In</span>
+      </Link>
+    )
+  }
+
+  const systemRole = session.user.systemRole || 'USER'
+  const roleConfig = ROLE_CONFIG[systemRole]
+  const Icon = roleConfig.icon
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200 w-full"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <div className={`w-6 h-6 rounded-full ${currentConfig.color} flex items-center justify-center`}>
+        <div className={`w-6 h-6 rounded-full ${roleConfig.color} flex items-center justify-center flex-shrink-0`}>
           <Icon className="w-3.5 h-3.5 text-white" />
         </div>
-        <span className="text-sm font-medium text-slate-700">{currentConfig.label}</span>
-        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-sm font-medium text-slate-700 truncate flex-1 text-left">
+          {session.user.name || session.user.email?.split('@')[0]}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
-          {/* Header */}
+        <div className="absolute left-0 bottom-full mb-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-2 z-50">
+          {/* User info */}
           <div className="px-4 py-2 border-b border-slate-100">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Test Mode - Switch Role
+            <p className="text-sm font-medium text-slate-900 truncate">
+              {session.user.name || 'User'}
             </p>
+            <p className="text-xs text-slate-500 truncate">{session.user.email}</p>
+            <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full ${
+              systemRole === 'SUPER_ADMIN'
+                ? 'bg-purple-100 text-purple-700'
+                : 'bg-slate-100 text-slate-600'
+            }`}>
+              {roleConfig.label}
+            </span>
           </div>
 
-          {/* Role options */}
+          {/* Menu options */}
           <div className="py-1">
-            {(Object.keys(ROLE_CONFIG) as UserRole[]).map((roleOption) => {
-              const config = ROLE_CONFIG[roleOption]
-              const RoleIcon = config.icon
-              const isSelected = role === roleOption
-
-              return (
-                <button
-                  key={roleOption}
-                  onClick={() => {
-                    setRole(roleOption)
-                    setIsOpen(false)
-                  }}
-                  className={`flex items-center gap-3 px-4 py-2 text-sm w-full transition-colors ${
-                    isSelected
-                      ? 'bg-slate-100 text-slate-900'
-                      : 'text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className={`w-6 h-6 rounded-full ${config.color} flex items-center justify-center`}>
-                    <RoleIcon className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <span className="font-medium">{config.label}</span>
-                  </div>
-                  {isSelected && (
-                    <span className="text-xs text-slate-500">Current</span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Info */}
-          <div className="px-4 py-2 border-t border-slate-100">
-            <p className="text-xs text-slate-500">
-              Viewing as: <span className="font-medium">{user.name}</span>
-            </p>
+            {systemRole === 'SUPER_ADMIN' && (
+              <Link
+                href="/admin/users"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <Users className="w-4 h-4" />
+                Manage Users
+              </Link>
+            )}
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                signOut({ callbackUrl: '/login' })
+              }}
+              className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </button>
           </div>
         </div>
       )}

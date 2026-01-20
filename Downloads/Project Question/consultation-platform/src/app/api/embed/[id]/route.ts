@@ -17,6 +17,15 @@ export async function GET(
       publicPins: {
         where: { approved: true }, // Only show approved pins publicly
         orderBy: { createdAt: 'desc' }
+      },
+      tours: {
+        where: { active: true },
+        include: {
+          stops: {
+            orderBy: { order: 'asc' }
+          }
+        },
+        take: 1 // Only get the first active tour for now
       }
     }
   })
@@ -37,6 +46,8 @@ export async function GET(
     latitude: project.latitude,
     longitude: project.longitude,
     mapZoom: project.mapZoom,
+    allowPins: project.allowPins,
+    allowDrawing: project.allowDrawing,
     overlays: project.imageOverlays.map(o => ({
       id: o.id,
       name: o.name,
@@ -55,6 +66,23 @@ export async function GET(
       name: p.name,
       votes: p.votes,
       createdAt: p.createdAt
-    }))
+    })),
+    tour: project.tours[0] ? {
+      id: project.tours[0].id,
+      name: project.tours[0].name,
+      description: project.tours[0].description,
+      stops: project.tours[0].stops.map(s => ({
+        id: s.id,
+        order: s.order,
+        title: s.title,
+        description: s.description,
+        imageUrl: s.imageUrl,
+        latitude: s.latitude,
+        longitude: s.longitude,
+        zoom: s.zoom,
+        highlight: s.highlight,
+        showOverlay: s.showOverlay
+      }))
+    } : null
   })
 }

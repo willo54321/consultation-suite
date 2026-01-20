@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Users, MapPin, Inbox, Settings, Mail, LayoutDashboard, BarChart3 } from 'lucide-react'
+import { ArrowLeft, Users, MapPin, Inbox, Settings, Mail, LayoutDashboard, BarChart3, Navigation, Code, Eye } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { OverviewTab } from './overview'
@@ -11,17 +11,33 @@ import { EnquiriesTab } from './enquiries'
 import { SettingsTab } from './settings'
 import { MailingListTab } from './mailing-list'
 import { AnalyticsTab } from './analytics'
+import { ToursTab } from './tours'
+import { EmbedSettingsTab } from './map'
 import UserMenu from '@/components/UserMenu'
 
-type Tab = 'overview' | 'stakeholders' | 'feedback' | 'analytics' | 'inbox' | 'mailing' | 'settings'
+type Tab = 'overview' | 'stakeholders' | 'feedback' | 'tours' | 'embed' | 'analytics' | 'inbox' | 'mailing' | 'settings'
+
+// Tabs that require admin access
+const ADMIN_ONLY_TABS: Tab[] = ['stakeholders', 'tours', 'embed', 'inbox', 'mailing', 'settings']
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
 
-  const { data: project, isLoading } = useQuery({
+  const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', params.id],
-    queryFn: () => fetch(`/api/projects/${params.id}`).then(r => r.json()),
+    queryFn: async () => {
+      const res = await fetch(`/api/projects/${params.id}`)
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Failed to fetch project')
+      }
+      return res.json()
+    },
   })
+
+  // User's role for this project (from API response)
+  const userRole = project?._userRole as 'ADMIN' | 'CLIENT' | null
+  const isAdmin = project?._isAdmin as boolean
 
   if (isLoading) {
     return (
@@ -42,13 +58,19 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     )
   }
 
-  if (!project) {
+  if (error || !project) {
     return (
       <div className="flex min-h-screen bg-slate-50 items-center justify-center">
         <div className="card p-8 text-center max-w-md">
-          <h2 className="text-lg font-semibold text-slate-900 mb-2">Project not found</h2>
-          <p className="text-slate-600 mb-4">This project may have been deleted or you don't have access.</p>
-          <Link href="/" className="btn-primary">
+          <h2 className="text-lg font-semibold text-slate-900 mb-2">
+            {error?.message === 'Forbidden' ? 'Access Denied' : 'Project not found'}
+          </h2>
+          <p className="text-slate-600 mb-4">
+            {error?.message === 'Forbidden'
+              ? "You don't have permission to access this project."
+              : 'This project may have been deleted or you may not have access.'}
+          </p>
+          <Link href="/projects" className="btn-primary">
             <ArrowLeft size={18} aria-hidden="true" />
             Back to Projects
           </Link>
@@ -60,50 +82,74 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   // Calculate combined feedback count
   const feedbackCount = (project.mapMarkers?.length || 0) + (project.publicPins?.length || 0) + (project.feedbackForms?.length || 0)
 
-  const tabs = [
+  const allTabs = [
     {
       id: 'overview' as Tab,
       label: 'Overview',
       icon: LayoutDashboard,
       count: 0,
+      adminOnly: false,
     },
     {
       id: 'stakeholders' as Tab,
       label: 'Stakeholders',
       icon: Users,
       count: project.stakeholders?.length || 0,
+      adminOnly: true,
     },
     {
       id: 'feedback' as Tab,
       label: 'Feedback',
       icon: MapPin,
       count: feedbackCount,
+      adminOnly: false,
+    },
+    {
+      id: 'tours' as Tab,
+      label: 'Tours',
+      icon: Navigation,
+      count: project.tours?.length || 0,
+      adminOnly: true,
+    },
+    {
+      id: 'embed' as Tab,
+      label: 'Embed',
+      icon: Code,
+      count: 0,
+      adminOnly: true,
     },
     {
       id: 'analytics' as Tab,
       label: 'AI Analytics',
       icon: BarChart3,
       count: 0,
+      adminOnly: false,
     },
     {
       id: 'inbox' as Tab,
       label: 'Inbox',
       icon: Inbox,
       count: project.enquiries?.length || 0,
+      adminOnly: true,
     },
     {
       id: 'mailing' as Tab,
       label: 'Mailing List',
       icon: Mail,
       count: project.subscribers?.length || 0,
+      adminOnly: true,
     },
     {
       id: 'settings' as Tab,
       label: 'Settings',
       icon: Settings,
       count: 0,
+      adminOnly: true,
     },
   ]
+
+  // Filter tabs based on user role - admins see all, clients see limited tabs
+  const tabs = allTabs.filter(tab => isAdmin || !tab.adminOnly)
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -117,7 +163,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         {/* Project Header */}
         <div className="p-4 border-b border-slate-200">
           <Link
-            href="/"
+            href="/projects"
             className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 transition-colors mb-3"
           >
             <ArrowLeft size={16} aria-hidden="true" />
@@ -128,6 +174,28 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           </h1>
           {project.description && (
             <p className="text-sm text-slate-500 mt-1 line-clamp-2">{project.description}</p>
+          )}
+          {/* Role indicator */}
+          {userRole && (
+            <div className="mt-2">
+              <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
+                isAdmin
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-blue-100 text-blue-700'
+              }`}>
+                {isAdmin ? (
+                  <>
+                    <Users size={10} />
+                    Admin
+                  </>
+                ) : (
+                  <>
+                    <Eye size={10} />
+                    View Only
+                  </>
+                )}
+              </span>
+            </div>
           )}
         </div>
 
@@ -197,6 +265,16 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           )}
           {activeTab === 'feedback' && (
             <FeedbackTab projectId={params.id} project={project} />
+          )}
+          {activeTab === 'tours' && (
+            <div className="p-6">
+              <ToursTab projectId={params.id} project={project} />
+            </div>
+          )}
+          {activeTab === 'embed' && (
+            <div className="p-6">
+              <EmbedSettingsTab projectId={params.id} project={project} />
+            </div>
           )}
           {activeTab === 'analytics' && (
             <div className="p-6">

@@ -1,9 +1,15 @@
 'use client'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2, X, Eye, Copy, FileText, Check, GripVertical } from 'lucide-react'
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
+import { Plus, Trash2, X, Eye, Copy, FileText, Check, GripVertical, List, ChevronDown, ChevronUp } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { usePermissions } from '@/hooks/usePermissions'
+
+interface FeedbackResponse {
+  id: string
+  data: Record<string, any>
+  submittedAt: string
+}
 
 interface FeedbackForm {
   id: string
@@ -11,6 +17,7 @@ interface FeedbackForm {
   fields: any[]
   active: boolean
   _count: { responses: number }
+  responses?: FeedbackResponse[]
 }
 
 const FIELD_TYPES = [
@@ -31,9 +38,18 @@ export function FormsTab({ projectId, forms }: { projectId: string; forms: Feedb
   const [formName, setFormName] = useState('')
   const [fields, setFields] = useState<any[]>([])
   const [viewingForm, setViewingForm] = useState<FeedbackForm | null>(null)
+  const [viewingResponses, setViewingResponses] = useState<string | null>(null)
+  const [expandedResponse, setExpandedResponse] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
+
+  // Fetch responses when viewing a form's responses
+  const { data: responsesData, isLoading: loadingResponses } = useQuery({
+    queryKey: ['form-responses', viewingResponses],
+    queryFn: () => fetch(`/api/projects/${projectId}/forms/${viewingResponses}`).then(r => r.json()),
+    enabled: !!viewingResponses,
+  })
 
   // Focus name input when form opens
   useEffect(() => {
@@ -313,6 +329,16 @@ export function FormsTab({ projectId, forms }: { projectId: string; forms: Feedb
               </div>
 
               <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                {(form._count?.responses || 0) > 0 && (
+                  <button
+                    onClick={() => setViewingResponses(form.id)}
+                    className="btn-ghost text-sm py-1.5 text-blue-600"
+                    aria-label={`View responses for ${form.name}`}
+                  >
+                    <List size={16} aria-hidden="true" />
+                    Responses
+                  </button>
+                )}
                 <button
                   onClick={() => setViewingForm(form)}
                   className="btn-ghost text-sm py-1.5"
@@ -477,6 +503,122 @@ export function FormsTab({ projectId, forms }: { projectId: string; forms: Feedb
                   className="btn-primary"
                 >
                   Close Preview
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* View Responses Modal */}
+      {viewingResponses && (
+        <>
+          <div
+            className="modal-overlay"
+            onClick={() => {
+              setViewingResponses(null)
+              setExpandedResponse(null)
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="modal"
+            role="dialog"
+            aria-labelledby="responses-title"
+            aria-modal="true"
+          >
+            <div className="modal-content p-6 max-w-4xl max-h-[80vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 id="responses-title" className="text-lg font-semibold text-slate-900">
+                    Form Responses
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    {responsesData?.responses?.length || 0} total responses
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setViewingResponses(null)
+                    setExpandedResponse(null)
+                  }}
+                  className="btn-icon"
+                  aria-label="Close responses"
+                >
+                  <X size={20} aria-hidden="true" />
+                </button>
+              </div>
+
+              <div className="overflow-y-auto flex-1 -mx-6 px-6">
+                {loadingResponses ? (
+                  <div className="flex items-center justify-center py-12">
+                    <span className="spinner" aria-hidden="true" />
+                    <span className="ml-2 text-slate-600">Loading responses...</span>
+                  </div>
+                ) : responsesData?.responses?.length === 0 ? (
+                  <div className="text-center py-12 text-slate-500">
+                    No responses yet
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {responsesData?.responses?.map((response: FeedbackResponse, index: number) => (
+                      <div key={response.id} className="card border border-slate-200">
+                        <button
+                          onClick={() => setExpandedResponse(expandedResponse === response.id ? null : response.id)}
+                          className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
+                        >
+                          <div>
+                            <span className="font-medium text-slate-900">
+                              Response #{responsesData.responses.length - index}
+                            </span>
+                            <span className="text-sm text-slate-500 ml-3">
+                              {new Date(response.submittedAt).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          {expandedResponse === response.id ? (
+                            <ChevronUp size={20} className="text-slate-400" />
+                          ) : (
+                            <ChevronDown size={20} className="text-slate-400" />
+                          )}
+                        </button>
+
+                        {expandedResponse === response.id && (
+                          <div className="px-4 pb-4 border-t border-slate-100 pt-4">
+                            <div className="space-y-3">
+                              {Object.entries(response.data).map(([key, value]) => (
+                                <div key={key}>
+                                  <dt className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                                    {key}
+                                  </dt>
+                                  <dd className="mt-1 text-sm text-slate-900">
+                                    {Array.isArray(value) ? value.join(', ') : String(value) || '-'}
+                                  </dd>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                <button
+                  onClick={() => {
+                    setViewingResponses(null)
+                    setExpandedResponse(null)
+                  }}
+                  className="btn-primary"
+                >
+                  Close
                 </button>
               </div>
             </div>

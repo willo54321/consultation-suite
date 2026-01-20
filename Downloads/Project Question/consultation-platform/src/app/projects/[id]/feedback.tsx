@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, MessageCircle, FileText, Code } from 'lucide-react'
-import { MapTab, PublicCommentsTab, EmbedSettingsTab } from './map'
+import { MapPin, MessageCircle, FileText } from 'lucide-react'
+import { MapTab, PublicCommentsTab } from './map'
 import { FormsTab } from './forms'
 
-type SubTab = 'map' | 'comments' | 'forms' | 'embed'
+type SubTab = 'map' | 'comments' | 'forms'
 
 export function FeedbackTab({ projectId, project }: { projectId: string; project: any }) {
   const [activeSubTab, setActiveSubTab] = useState<SubTab>('map')
@@ -28,11 +28,6 @@ export function FeedbackTab({ projectId, project }: { projectId: string; project
       label: 'Forms',
       icon: FileText,
       count: project.feedbackForms?.length || 0,
-    },
-    {
-      id: 'embed' as SubTab,
-      label: 'Embed',
-      icon: Code,
     },
   ]
 
@@ -82,11 +77,6 @@ export function FeedbackTab({ projectId, project }: { projectId: string; project
         {activeSubTab === 'forms' && (
           <div className="p-6">
             <FormsTab projectId={projectId} forms={project.feedbackForms || []} />
-          </div>
-        )}
-        {activeSubTab === 'embed' && (
-          <div className="p-6">
-            <EmbedSettingsTab projectId={projectId} project={project} />
           </div>
         )}
       </div>

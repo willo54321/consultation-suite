@@ -236,6 +236,8 @@ model Project {
   updatedAt        DateTime       @updatedAt
   mapZoom          Int?           @default(10)
   embedEnabled     Boolean        @default(false)
+  allowPins        Boolean        @default(true)  // Allow visitors to drop pins/comments
+  allowDrawing     Boolean        @default(false) // Allow visitors to draw shapes
   organizationId   String?
   // Email configuration - requires domain to be verified in Resend
   emailFromName    String?        // e.g., "Project ABC Team"
@@ -252,6 +254,8 @@ model Project {
   subscribers    Subscriber[]
   teamMembers    TeamMember[]
   analysisResults AnalysisResult[]
+  tours          Tour[]
+  userAccess     ProjectAccess[]
 }
 
 model ProjectEmail {
@@ -353,18 +357,45 @@ model TeamMember {
   Project      Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
+enum SystemRole {
+  SUPER_ADMIN
+  USER
+}
+
+enum ProjectRole {
+  ADMIN
+  CLIENT
+}
+
 model User {
   id                 String               @id @default(cuid())
   name               String?
   email              String               @unique
   emailVerified      DateTime?
   image              String?
+  systemRole         SystemRole           @default(USER)
   createdAt          DateTime             @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt          DateTime             @updatedAt
   accounts           Account[]
   invitations        Invitation[]
   organizationMemberships OrganizationMember[]
   sessions           Session[]
+  projectAccess      ProjectAccess[]
+}
+
+model ProjectAccess {
+  id        String      @id @default(cuid())
+  userId    String
+  projectId String
+  role      ProjectRole @default(CLIENT)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([userId])
+  @@index([projectId])
 }
 
 model VerificationToken {
@@ -387,4 +418,37 @@ model AnalysisResult {
 
   @@unique([projectId, type])
   @@index([projectId])
+}
+
+model Tour {
+  id          String     @id @default(cuid())
+  projectId   String
+  name        String
+  description String?
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stops       TourStop[]
+
+  @@index([projectId])
+}
+
+model TourStop {
+  id          String   @id @default(cuid())
+  tourId      String
+  order       Int
+  title       String
+  description String
+  imageUrl    String?
+  latitude    Float
+  longitude   Float
+  zoom        Int      @default(16)
+  highlight   Json?    // Optional polygon geometry to highlight
+  showOverlay String?  // Optional overlay ID to show at this stop
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
 }

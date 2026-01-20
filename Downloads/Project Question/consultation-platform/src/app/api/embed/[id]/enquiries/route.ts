@@ -3,6 +3,18 @@ import { sendNewEnquiryNotification } from '@/lib/email'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
+// CORS headers for cross-origin form submissions
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
@@ -23,18 +35,18 @@ export async function POST(
   })
 
   if (!project) {
-    return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Project not found' }, { status: 404, headers: corsHeaders })
   }
 
   if (!project.embedEnabled) {
-    return NextResponse.json({ error: 'Enquiries not enabled' }, { status: 403 })
+    return NextResponse.json({ error: 'Enquiries not enabled' }, { status: 403, headers: corsHeaders })
   }
 
   const body = await request.json()
 
   // Basic validation
   if (!body.submitterName || !body.submitterEmail || !body.subject || !body.message) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 400, headers: corsHeaders })
   }
 
   const enquiry = await prisma.enquiry.create({
@@ -74,6 +86,32 @@ export async function POST(
     })
   }
 
+  // Auto-add to mailing list
+  try {
+    await prisma.subscriber.upsert({
+      where: {
+        projectId_email: {
+          projectId: params.id,
+          email: body.submitterEmail.toLowerCase(),
+        },
+      },
+      create: {
+        projectId: params.id,
+        email: body.submitterEmail.toLowerCase(),
+        name: body.submitterName || null,
+        source: 'enquiry',
+        sourceId: enquiry.id,
+      },
+      update: {
+        name: body.submitterName || undefined,
+        subscribed: true,
+        unsubscribedAt: null,
+      },
+    })
+  } catch (error) {
+    console.error('Failed to add subscriber from enquiry:', error)
+  }
+
   // Send notification to team members
   const teamEmails = project.teamMembers.map(m => m.email).filter(Boolean)
   if (teamEmails.length > 0) {
@@ -100,5 +138,5 @@ export async function POST(
     success: true,
     reference: enquiry.id,
     message: 'Your enquiry has been submitted successfully.',
-  })
+  }, { headers: corsHeaders })
 }
