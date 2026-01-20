@@ -9,11 +9,13 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-12">
           {/* Logo & Description */}
           <div className="md:col-span-2">
-            <img
-              src="/GKH-Logo.webp"
-              alt="Green Kite Homes"
-              className="h-12 w-auto brightness-0 invert mb-4"
-            />
+            <a href="/">
+              <img
+                src="/GKH-Logo.webp"
+                alt="Green Kite Homes"
+                className="h-12 w-auto brightness-0 invert mb-4"
+              />
+            </a>
             <p className="text-white/60 leading-relaxed max-w-md">
               Green Kite Homes is developing a new residential community at
               Grove Heath North. We are committed to working with the local

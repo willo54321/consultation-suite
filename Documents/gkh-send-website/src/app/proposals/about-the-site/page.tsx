@@ -24,9 +24,9 @@ export default function AboutTheSitePage() {
               transition={{ duration: 0.6 }}
             >
               <p className="text-[#6B7280] text-lg leading-relaxed mb-8">
-                The Grove Heath North site comprises an area of previous clay extraction at the north
-                of the site, some commercial storage and hardstanding at the southern portion and
-                grassland on the rest of the site.
+                The site is a total of 25.9 hectares. It comprises an area of previous clay extraction
+                at the north of the site, a farm building and commercial storage with hardstanding at
+                the southern portion and grassland on the rest of the site.
               </p>
               <p className="text-[#6B7280] text-lg leading-relaxed mb-8">
                 Grove Heath North is the name given by Guildford Borough Council to this site, though
@@ -40,7 +40,7 @@ export default function AboutTheSitePage() {
                 <h3 className="text-xl font-semibold text-white mb-6 heading-font">Site Characteristics</h3>
                 <ul className="space-y-4">
                   {[
-                    'Located to the north of Send Marsh village, within the Wisley Common Special Protection Area (SPA).',
+                    'Located to the north of Send Marsh village, within the Thames Basin Heath Special Protection Area (SPA).',
                     'Previously developed land with farm buildings on site.',
                     'Many mature trees on the site and a woodland to the south-east. Our proposals retain as many as possible.',
                     'Existing site access from Portsmouth Road.',

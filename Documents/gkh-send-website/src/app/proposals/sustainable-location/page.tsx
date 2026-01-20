@@ -6,8 +6,8 @@ import ProposalPageHeader from '@/components/ProposalPageHeader';
 export default function SustainableLocationPage() {
   const amenities = [
     { name: 'Ripley Village Centre', distance: "14 minutes' walk" },
-    { name: 'Ripley Church of England Primary School', distance: "13 minutes' walk" },
-    { name: 'The Jovial Sailor pub', distance: "5 minutes' walk" },
+    { name: 'Send Church of England Primary School', distance: "25 minutes' walk" },
+    { name: "The Jovial Sailor and The Saddler's Arms pub", distance: "5 minutes' walk" },
     { name: 'Little Waitrose and Shell garage', distance: "9 minutes' walk" },
     { name: 'Papercourt Sailing Club', distance: "12 minutes' walk" },
   ];
@@ -15,8 +15,8 @@ export default function SustainableLocationPage() {
   const transportLinks = [
     { name: 'Grove Heath Road bus stops', distance: 'Around 200 metres' },
     { name: 'Tuckey Grove bus stops', distance: 'Around 100 metres' },
-    { name: 'Clandon railway station', distance: '3.6 km' },
-    { name: 'Woking railway station', distance: '6.8 km' },
+    { name: 'Clandon railway station', distance: '7 km' },
+    { name: 'Woking railway station', distance: '7.6 km' },
   ];
 
   return (
@@ -119,7 +119,7 @@ export default function SustainableLocationPage() {
             {[
               { route: '463', description: 'Woking - Guildford' },
               { route: '462', description: 'Woking - Guildford' },
-              { route: 'Kingston', description: 'Kingston - Guildford' },
+              { route: '715', description: 'Kingston - Guildford' },
             ].map((bus, index) => (
               <div key={index} className="bg-white p-6 text-center">
                 <span className="block text-2xl font-semibold text-[#025956] mb-1">{bus.route}</span>

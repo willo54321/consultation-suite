@@ -57,7 +57,7 @@ export default function WaterManagementPage() {
                 Lake SSSI outside the site to the northwest.
               </p>
               <p className="text-[#6B7280] text-lg leading-relaxed mb-6">
-                The site is majority Flood Zone 1 (Low risk) with some Zones 2 and 3 at the western edge.
+                The site is mainly Flood Zone 1 (Low risk) with some Zones 2 and 3 at the western edge.
                 A site-specific Flood Risk Assessment is being prepared and will be incorporated into our
                 water strategy to produce robust flood mitigation measures and increase biodiversity.
               </p>

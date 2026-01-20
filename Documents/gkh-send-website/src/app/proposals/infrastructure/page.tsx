@@ -8,7 +8,7 @@ export default function InfrastructurePage() {
     'Highways infrastructure and public transport requirements.',
     'Education requirements including nursery, primary, secondary and further education needs.',
     'Healthcare requirements including doctors and dentist provision.',
-    'Onsite provision of community facilities such as community hub or small commercial shop.',
+    'Onsite provision of community facilities such as community hub or small shop.',
     'Foul and surface water drainage capacities.',
     'Utility provision.',
   ];

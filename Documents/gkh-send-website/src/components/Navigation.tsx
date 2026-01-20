@@ -66,7 +66,7 @@ export default function Navigation() {
         <nav className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between h-20 lg:h-24">
             {/* Logo */}
-            <a href="#" className="flex items-center z-50">
+            <a href="/" className="flex items-center z-50">
               <img
                 src="/GKH-Logo.webp"
                 alt="Green Kite Homes"

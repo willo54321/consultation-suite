@@ -4,19 +4,10 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { newsItems } from '@/data/news';
 
-// Sample news data - in production this would come from a CMS or API
-export const newsItems = [
-  {
-    id: 1,
-    slug: 'lorem-ipsum-article',
-    title: 'Lorem ipsum dolor sit amet consectetur',
-    excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    date: '15 January 26',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    category: 'News',
-  },
-];
+// Re-export for backwards compatibility
+export { newsItems };
 
 export default function NewsCarousel() {
   const carouselRef = useRef<HTMLDivElement>(null);

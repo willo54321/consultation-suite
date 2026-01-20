@@ -37,9 +37,10 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="sub-heading text-white/80 max-w-3xl mx-auto mb-12"
         >
-          Green Kite Homes is proposing a new mixed-use development at land known as Grove Heath North,
-          within the parish of Ripley, northwest of Send Marsh. We aim to hear the views of the local
-          community as we work towards submitting an outline planning application.
+          Welcome to the public exhibition of our proposals for a new mixed-use development at land
+          known as Grove Heath North, within the parish of Ripley. During this consultation period,
+          we aim to hear the views of the local community as we work towards submitting an outline
+          planning application.
         </motion.p>
 
         <motion.div

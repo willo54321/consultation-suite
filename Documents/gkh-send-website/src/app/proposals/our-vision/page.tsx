@@ -10,7 +10,7 @@ export default function OurVisionPage() {
     'Community focused: provision of community spaces and community gardens.',
     'Healthy living with substantial green and blue infrastructure.',
     'Active travel-focused with design that encourages walking, cycling and access to public transport.',
-    'High-quality and sustainable homes.',
+    'High-quality and sustainable homes and climate resilient planting.',
     'Homes with gardens, including opportunities to grow food.',
     'Design in-keeping with the identifiable local vernacular.',
     'Climate resilience, using zero-carbon and energy positive technology.',

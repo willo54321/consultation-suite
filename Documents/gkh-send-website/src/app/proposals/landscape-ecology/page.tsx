@@ -41,10 +41,9 @@ export default function LandscapeEcologyPage() {
 
   const landscapeFeatures = [
     'The westernmost section of the site retained as a landscape buffer, providing separation between Send Marsh, and Papercourt SSSI and the new development.',
-    'Provision of a Suitable Alternative Natural Green Space (SANG) to protect the adjacent Special Protection Area. Our proposals exceed all SANG requirements, providing a circular walking route of 2.5 km.',
-    'A walkable community through enhanced Public Rights of Ways and improving connectivity and accessibility to natural assets.',
+    'A walkable community through enhanced Public Rights of Ways and improved connectivity and accessibility to natural assets. Potential for a 2.5 km circular walking route.',
     'Large linear parks and green infrastructure networks promoting biodiversity and allow both people and nature to thrive.',
-    'Substantial play space of 0.64ha in a mix of equipped and informal play spaces, spread throughout the site.',
+    'Substantial play space of 0.64ha in a mix of equipped and informal play spaces, spread throughout the site. A key focus of the play strategy will be to utilise playful routes and trails, play on the way, public art and edible landscapes to activate these spaces.',
   ];
 
   return (

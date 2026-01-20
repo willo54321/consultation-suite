@@ -27,9 +27,8 @@ export default function AboutSection() {
                 successful public spaces become the focus of a new community.
               </p>
               <p>
-                The development site, called Grove Heath North by Guildford Borough Council, is located
-                southeast of Papercourt Lake. Portsmouth Road runs along its eastern boundary, and
-                Burntcommon to the south.
+                Please complete our survey to let us know your views, or contact the Green Kite Homes
+                project team with any questions you may have about the current outline proposals.
               </p>
             </div>
             <div className="mt-10">
