@@ -84,9 +84,11 @@ export default function OurVisionPage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="bg-white aspect-video max-w-4xl mx-auto flex items-center justify-center">
-              <p className="text-[#6B7280]">Indicative sketch of green open space within the development</p>
-            </div>
+            <img
+              src="/images/ourvision1.webp"
+              alt="Indicative sketch of green open space within the development"
+              className="w-full max-w-4xl mx-auto rounded-lg"
+            />
           </motion.div>
         </div>
       </section>

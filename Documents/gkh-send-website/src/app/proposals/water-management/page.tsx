@@ -8,26 +8,32 @@ export default function WaterManagementPage() {
     {
       title: 'Wetlands',
       description: 'Permanent water levels within green open space to provide attenuation and treatment of water.',
+      image: '/images/wetland.png',
     },
     {
       title: 'Detention basins',
       description: 'Providing attenuation during heavy rainfall, but normally dry and functions as a recreational facility during dry periods. Gravel and vegetation provide water treatment prior to discharge.',
+      image: '/images/detention-basin.png',
     },
     {
       title: 'Swales',
       description: 'Broad shallow permeable channels to convey and store run-off. Vegetation in the swale allows run-off to be treated and silt to be deposited.',
+      image: '/images/swales.png',
     },
     {
       title: 'Water butts',
       description: 'One of the most common measures for property-level SUDs, collecting rainwater.',
+      image: '/images/water-butts.png',
     },
     {
       title: 'Rain gardens',
       description: 'Shallow landscaped depression to collect rainwater from downpipe or from road and release slowly to ground or sewers to reduce the volume of run-off.',
+      image: '/images/rain-garden.png',
     },
     {
       title: 'Lined permeable pavement',
       description: 'Would provide water quality benefits, while attenuating and slowing down water flows.',
+      image: '/images/lined-permeable-pavement.png',
     },
   ];
 
@@ -119,9 +125,17 @@ export default function WaterManagementPage() {
                 transition={{ delay: index * 0.1 }}
                 className="bg-white p-6"
               >
-                <div className="w-full aspect-video bg-[#F8F9F7] mb-4 flex items-center justify-center">
-                  <span className="text-[#6B7280] text-sm">{feature.title} illustration</span>
-                </div>
+                {feature.image ? (
+                  <img
+                    src={feature.image}
+                    alt={feature.title}
+                    className="w-full aspect-video object-cover mb-4"
+                  />
+                ) : (
+                  <div className="w-full aspect-video bg-[#F8F9F7] mb-4 flex items-center justify-center">
+                    <span className="text-[#6B7280] text-sm">{feature.title} illustration</span>
+                  </div>
+                )}
                 <h4 className="font-semibold text-[#1E1E1E] mb-2">{feature.title}</h4>
                 <p className="text-[#6B7280] text-sm">{feature.description}</p>
               </motion.div>

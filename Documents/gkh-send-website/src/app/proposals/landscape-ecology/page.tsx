@@ -169,6 +169,28 @@ export default function LandscapeEcologyPage() {
           </div>
         </div>
       </section>
+
+      {/* Landscape Strategy Image */}
+      <section className="section-padding bg-[#F8F9F7]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 heading-font">
+              Landscape Strategy Plan
+            </h3>
+            <img
+              src="/images/landscape.webp"
+              alt="Landscape Strategy Plan"
+              className="w-full max-w-5xl mx-auto rounded-lg"
+            />
+          </motion.div>
+        </div>
+      </section>
     </>
   );
 }

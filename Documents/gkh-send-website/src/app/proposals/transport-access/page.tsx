@@ -109,29 +109,18 @@ export default function TransportAccessPage() {
             Proposed Access Points
           </motion.h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: 'Primary Vehicle Access', description: 'New junction from Portsmouth Road' },
-              { title: 'Emergency Access', description: 'Retained existing access to the north' },
-              { title: 'Pedestrian Connection', description: 'New link to Send Marsh Road via public footpath' },
-              { title: 'Cycle Connection', description: 'Potential connection to Portsmouth Road' },
-            ].map((point, index) => (
-              <motion.div
-                key={point.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#F8F9F7] p-6"
-              >
-                <div className="w-10 h-10 bg-[#025956] rounded-full flex items-center justify-center text-white font-medium mb-4">
-                  {index + 1}
-                </div>
-                <h4 className="font-semibold text-[#1E1E1E] mb-2">{point.title}</h4>
-                <p className="text-[#6B7280] text-sm">{point.description}</p>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <img
+              src="/images/highways.png"
+              alt="Proposed access points and transport infrastructure"
+              className="w-full max-w-5xl mx-auto rounded-lg"
+            />
+          </motion.div>
         </div>
       </section>
 

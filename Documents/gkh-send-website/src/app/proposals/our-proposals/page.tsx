@@ -137,9 +137,11 @@ export default function OurProposalsPage() {
             <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 heading-font">
               Indicative Layout
             </h3>
-            <div className="bg-white aspect-video max-w-5xl mx-auto flex items-center justify-center">
-              <p className="text-[#6B7280]">Indicative layout of a possible development at Grove Heath North</p>
-            </div>
+            <img
+              src="/images/indicative-layout.webp"
+              alt="Indicative layout of a possible development at Grove Heath North"
+              className="w-full max-w-5xl mx-auto rounded-lg"
+            />
           </motion.div>
         </div>
       </section>
