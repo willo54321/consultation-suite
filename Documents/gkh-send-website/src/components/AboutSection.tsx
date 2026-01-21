@@ -38,36 +38,35 @@ export default function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Stats Grid */}
+          {/* Image Gallery */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid grid-cols-2 gap-6"
+            className="grid grid-cols-2 gap-4"
           >
-            {[
-              { number: '540', label: 'New Homes' },
-              { number: '50%', label: 'Affordable' },
-              { number: '30%+', label: 'Green Space' },
-              { number: '9.2ha', label: 'SANG' },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 + 0.4 }}
-                className="bg-[#F8F9F7] p-8 rounded-lg text-center"
-              >
-                <span className="block text-4xl md:text-5xl font-light text-[#025956] mb-2">
-                  {stat.number}
-                </span>
-                <span className="text-[#6B7280] text-sm tracking-wide uppercase">
-                  {stat.label}
-                </span>
-              </motion.div>
-            ))}
+            <div className="col-span-2">
+              <img
+                src="/images/about1.webp"
+                alt="About the site"
+                className="w-full h-64 object-cover rounded-lg"
+              />
+            </div>
+            <div>
+              <img
+                src="/images/about2.webp"
+                alt="Site landscape"
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            </div>
+            <div>
+              <img
+                src="/images/about3.webp"
+                alt="Local area"
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            </div>
           </motion.div>
         </div>
 
@@ -82,12 +81,12 @@ export default function AboutSection() {
           <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 text-center heading-font">The Team</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
             {[
-              { role: 'Developer & Applicant', name: 'Green Kite Homes' },
-              { role: 'Planning Consultants', name: 'Stantec' },
-              { role: 'Architects', name: 'rg+p' },
-              { role: 'Landscape Architects', name: 'NDLA' },
-              { role: 'Community Engagement', name: 'SEC Newgate' },
-              { role: 'Transport Planning', name: 'Apex' },
+              { role: 'Developer & Applicant', name: 'Green Kite Homes', logo: '/images/logos/green-kite-homes.png', darkBg: true },
+              { role: 'Planning Consultants', name: 'Stantec', logo: '/images/logos/stantec.png' },
+              { role: 'Architects', name: 'rg+p', logo: '/images/logos/rgp.png' },
+              { role: 'Landscape Architects', name: 'NDLA', logo: '/images/logos/ndla.svg' },
+              { role: 'Community Engagement', name: 'SEC Newgate', logo: '/images/logos/sec-newgate.svg' },
+              { role: 'Transport Planning', name: 'Apex', logo: '/images/logos/apex.png' },
             ].map((team, index) => (
               <motion.div
                 key={team.role}
@@ -97,6 +96,13 @@ export default function AboutSection() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
+                <div className={`h-16 flex items-center justify-center mb-3 ${team.darkBg ? 'bg-[#025956] rounded-lg px-3' : ''}`}>
+                  <img
+                    src={team.logo}
+                    alt={team.name}
+                    className="max-h-12 max-w-full object-contain"
+                  />
+                </div>
                 <p className="text-[#025956] font-medium mb-1">{team.name}</p>
                 <p className="text-[#6B7280] text-sm">{team.role}</p>
               </motion.div>
