@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function TransportAccessPage() {
   const developmentBenefits = [
@@ -115,7 +116,7 @@ export default function TransportAccessPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <img
+            <LightboxImage
               src="/images/highways.png"
               alt="Proposed access points and transport infrastructure"
               className="w-full max-w-5xl mx-auto rounded-lg"

@@ -40,8 +40,19 @@ export default function MapPage() {
           </div>
         </section>
 
+        {/* Note Section */}
+        <section className="pt-8 pb-4">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="bg-[#F8F9F7] border-l-4 border-[#025956] p-4">
+              <p className="text-[#6B7280] text-sm">
+                <strong className="text-[#1E1E1E]">Please note:</strong> The masterplan and boundary overlay shown on this map is illustrative only and is designed to allow for a greater understanding of the proposals.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Map Section */}
-        <section className="py-12">
+        <section className="py-8">
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

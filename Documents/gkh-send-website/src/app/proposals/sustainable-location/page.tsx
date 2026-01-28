@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function SustainableLocationPage() {
   const amenities = [
@@ -126,6 +127,28 @@ export default function SustainableLocationPage() {
                 <span className="text-[#6B7280] text-sm">{bus.description}</span>
               </div>
             ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Location Map */}
+      <section className="section-padding bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 heading-font">
+              Location & Connectivity
+            </h3>
+            <LightboxImage
+              src="/images/sustainable-location.png"
+              alt="Site location and local amenities map"
+              className="w-full max-w-5xl mx-auto rounded-lg"
+            />
           </motion.div>
         </div>
       </section>

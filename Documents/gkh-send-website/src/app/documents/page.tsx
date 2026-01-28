@@ -2,41 +2,68 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Download, Image, File } from 'lucide-react';
+import { ArrowLeft, Download, Image, FileText } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 
 const documents = [
   {
-    category: 'Exhibition Materials',
+    category: 'Consultation Materials',
     items: [
       {
-        title: 'Exhibition Boards',
-        description: 'View all exhibition boards including site location, masterplan, housing, landscape and sustainability proposals.',
+        title: 'Exhibition Banners',
+        description: 'View our exhibition banners with detailed information about the proposals.',
         type: 'PDF',
-        size: '12.5 MB',
+        size: '9.4 MB',
         icon: Image,
+        href: '/documents/GKH - Exhibition Banners.pdf',
+      },
+      {
+        title: 'Feedback Form',
+        description: 'Download and complete our feedback form to share your views on the proposals.',
+        type: 'PDF',
+        size: '1.1 MB',
+        icon: FileText,
+        href: '/documents/GKH - Feedback Form.pdf',
       },
     ],
   },
   {
-    category: 'Consultation Documents',
+    category: 'Technical Plans',
     items: [
       {
-        title: 'Consultation Invite Letter',
-        description: 'The invitation letter sent to local residents about the consultation.',
+        title: 'Illustrative Site Layout',
+        description: 'Overview of the proposed site layout showing housing, green spaces and infrastructure.',
         type: 'PDF',
-        size: '156 KB',
-        icon: FileText,
+        size: '2.2 MB',
+        icon: Image,
+        href: '/documents/103-297 Illustrative Site Layout_Apex.pdf',
       },
       {
-        title: 'Paper Feedback Form',
-        description: 'Printable feedback form for those who prefer to respond on paper.',
+        title: 'Land Use Diagram',
+        description: 'Diagram showing the proposed land uses across the site.',
         type: 'PDF',
-        size: '245 KB',
-        icon: File,
+        size: '2.1 MB',
+        icon: Image,
+        href: '/documents/103-297 Land Use Diagram.pdf',
       },
-    ],
+      {
+        title: 'Facilities Plan',
+        description: 'Plan showing proposed community facilities and amenities.',
+        type: 'PDF',
+        size: '7.0 MB',
+        icon: Image,
+        href: '/documents/103-297 Facilities Plan.pdf',
+      },
+      {
+        title: 'Travel Connection Plan',
+        description: 'Plan showing pedestrian, cycle and vehicle connections.',
+        type: 'PDF',
+        size: '7.1 MB',
+        icon: Image,
+        href: '/documents/103-297 Travel Connection Plan.pdf',
+      },
+          ],
   },
 ];
 
@@ -94,7 +121,9 @@ export default function DocumentsPage() {
                     return (
                       <motion.a
                         key={doc.title}
-                        href="#"
+                        href={doc.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: categoryIndex * 0.1 + docIndex * 0.05 }}

@@ -1,25 +1,25 @@
 // News data - shared between server and client components
 export const newsItems = [
   {
-    id: 1,
-    slug: 'lorem-ipsum-article',
-    title: 'Lorem ipsum dolor sit amet consectetur',
-    excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    date: '15 January 26',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    category: 'News',
+    id: 2,
+    slug: 'consultation-documents-available',
+    title: 'Consultation documents now available to download',
+    excerpt: 'All documents from our public consultation events are now available to view and download from our project documents page.',
+    date: '22 January 26',
+    image: '/images/103-297 - View 01 A-01.webp',
+    category: 'Update',
   },
 ];
 
-export const articleContent: Record<string, { intro: string; paragraphs: string[]; pullQuote?: string }> = {
-  'lorem-ipsum-article': {
-    intro: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
+export const articleContent: Record<string, { intro: string; paragraphs: string[]; pullQuote?: string; linkText?: string; linkHref?: string }> = {
+  'consultation-documents-available': {
+    intro: 'All documents from our recent public consultation events are now available to view and download from our project documents page.',
     paragraphs: [
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-      'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',
+      'The documents include our exhibition banners which provide detailed information about the Grove Heath North proposals, as well as our feedback form for those who wish to share their views.',
+      'Our technical plans are also available, including the Illustrative Site Layout, Land Use Diagram, Facilities Plan, and Travel Connection Plan.',
+      'We encourage all members of the community to review these documents and share their feedback on our proposals.',
     ],
-    pullQuote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    linkText: 'View all documents',
+    linkHref: '/documents',
   },
 };

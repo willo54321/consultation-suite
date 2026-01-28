@@ -29,40 +29,39 @@ export default function Footer() {
               Quick Links
             </h4>
             <ul className="space-y-3">
-              {['About', 'The Vision', 'Have Your Say', 'FAQs', 'Contact'].map(
-                (link) => (
-                  <li key={link}>
-                    <a
-                      href={`#${link.toLowerCase().replace(' ', '-')}`}
-                      className="text-white/60 hover:text-white transition-colors"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                )
-              )}
+              {[
+                { name: 'About the Site', href: '/proposals/about-the-site' },
+                { name: 'Our Vision', href: '/proposals/our-vision' },
+                { name: 'Our Proposals', href: '/proposals/our-proposals' },
+                { name: 'Have Your Say', href: '/feedback' },
+                { name: 'Documents', href: '/documents' },
+              ].map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className="text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Contact */}
           <div>
             <h4 className="text-sm font-medium tracking-wider uppercase mb-6">
-              Legal
+              Contact
             </h4>
-            <ul className="space-y-3">
-              {['Privacy Policy', 'Cookie Policy', 'Terms of Use', 'Accessibility'].map(
-                (link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-white/60 hover:text-white transition-colors"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                )
-              )}
-            </ul>
+            <p className="text-white/60 mb-4">
+              Get in touch with our project team:
+            </p>
+            <a
+              href="mailto:info@groveheathnorth.co.uk"
+              className="text-[#7dd3c0] hover:text-white transition-colors"
+            >
+              info@groveheathnorth.co.uk
+            </a>
           </div>
         </div>
 

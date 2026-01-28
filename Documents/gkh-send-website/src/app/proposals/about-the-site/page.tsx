@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function AboutTheSitePage() {
   return (
@@ -70,27 +71,35 @@ export default function AboutTheSitePage() {
                 <span className="text-[#6B7280] text-lg">Hectares Total Site Area</span>
               </div>
 
-              {/* Image Placeholders */}
+              {/* Site Images */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#F8F9F7] aspect-square flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <p className="text-[#6B7280] text-sm">Electricity pylons and previously developed land</p>
-                  </div>
+                <div className="aspect-square overflow-hidden rounded-lg">
+                  <LightboxImage
+                    src="/images/Pylons and PDL.webp"
+                    alt="Electricity pylons and previously developed land"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="bg-[#F8F9F7] aspect-square flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <p className="text-[#6B7280] text-sm">Existing trees and public right of way</p>
-                  </div>
+                <div className="aspect-square overflow-hidden rounded-lg">
+                  <LightboxImage
+                    src="/images/Pylons and right of way.webp"
+                    alt="Existing trees and public right of way"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="bg-[#F8F9F7] aspect-square flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <p className="text-[#6B7280] text-sm">Existing access road</p>
-                  </div>
+                <div className="aspect-square overflow-hidden rounded-lg">
+                  <LightboxImage
+                    src="/images/Access road.jpg"
+                    alt="Existing access road"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="bg-[#F8F9F7] aspect-square flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <p className="text-[#6B7280] text-sm">Land uses map</p>
-                  </div>
+                <div className="aspect-square overflow-hidden rounded-lg">
+                  <LightboxImage
+                    src="/images/land-use-plan.png"
+                    alt="Land use plan"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </motion.div>

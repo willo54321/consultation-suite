@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, CheckCircle } from 'lucide-react';
 
-const CONSULT_AI_PROJECT_ID = 'cmki5h8y80000ws6pbthwgyns';
-const CONSULT_AI_URL = 'https://consult-ai-mauve.vercel.app';
+// Replace with your Formspree form ID from https://formspree.io
+const FORMSPREE_CONTACT_ID = 'xaqqvbvb';
 
 export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -27,16 +27,16 @@ export default function ContactSection() {
 
     try {
       const response = await fetch(
-        `${CONSULT_AI_URL}/api/embed/${CONSULT_AI_PROJECT_ID}/enquiries`,
+        `https://formspree.io/f/${FORMSPREE_CONTACT_ID}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            submitterName: `${formData.firstName} ${formData.lastName}`.trim(),
-            submitterEmail: formData.email,
-            subject: `Contact form enquiry${formData.postcode ? ` (${formData.postcode})` : ''}`,
+            name: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email,
+            postcode: formData.postcode,
             message: formData.message,
-            category: 'general',
+            _subject: 'Grove Heath North - Contact Form Enquiry',
           }),
         }
       );

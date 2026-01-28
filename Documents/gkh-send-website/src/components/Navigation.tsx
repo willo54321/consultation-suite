@@ -19,7 +19,6 @@ const proposalSubItems = [
 const navItems = [
   { name: 'About', href: '/#about', hasSubmenu: false },
   { name: 'Proposals', href: '/proposals', hasSubmenu: true, subItems: proposalSubItems },
-  { name: 'Interactive Map', href: '/map', hasSubmenu: true },
   { name: 'Have Your Say', href: '/feedback', hasSubmenu: true },
   { name: 'Documents', href: '/documents', hasSubmenu: true },
   { name: 'News', href: '/news', hasSubmenu: true },

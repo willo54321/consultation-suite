@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function OurVisionPage() {
   const visionPoints = [
@@ -84,7 +85,7 @@ export default function OurVisionPage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <img
+            <LightboxImage
               src="/images/ourvision1.webp"
               alt="Indicative sketch of green open space within the development"
               className="w-full max-w-4xl mx-auto rounded-lg"

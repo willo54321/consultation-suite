@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function OurProposalsPage() {
   const proposals = [
@@ -137,7 +138,7 @@ export default function OurProposalsPage() {
             <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 heading-font">
               Indicative Layout
             </h3>
-            <img
+            <LightboxImage
               src="/images/indicative-layout.webp"
               alt="Indicative layout of a possible development at Grove Heath North"
               className="w-full max-w-5xl mx-auto rounded-lg"

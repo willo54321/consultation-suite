@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function LandscapeEcologyPage() {
   const designPrinciples = [
@@ -183,8 +184,8 @@ export default function LandscapeEcologyPage() {
             <h3 className="text-2xl font-semibold text-[#1E1E1E] mb-8 heading-font">
               Landscape Strategy Plan
             </h3>
-            <img
-              src="/images/landscape.webp"
+            <LightboxImage
+              src="/images/landscape.png"
               alt="Landscape Strategy Plan"
               className="w-full max-w-5xl mx-auto rounded-lg"
             />

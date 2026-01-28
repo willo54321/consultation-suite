@@ -136,6 +136,19 @@ export default function NewsArticleContent({ slug }: NewsArticleContentProps) {
               )}
             </div>
           ))}
+
+          {/* Article Link */}
+          {content.linkText && content.linkHref && (
+            <div className="mt-10 pt-8 border-t border-gray-200">
+              <Link
+                href={content.linkHref}
+                className="inline-flex items-center gap-3 bg-[#025956] text-white px-6 py-3 font-medium hover:bg-[#037471] transition-colors rounded"
+              >
+                {content.linkText}
+                <ArrowRight size={18} />
+              </Link>
+            </div>
+          )}
         </motion.div>
 
       </section>

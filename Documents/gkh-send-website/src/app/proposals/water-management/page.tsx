@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ProposalPageHeader from '@/components/ProposalPageHeader';
+import LightboxImage from '@/components/LightboxImage';
 
 export default function WaterManagementPage() {
   const sudsFeatures = [
@@ -126,7 +127,7 @@ export default function WaterManagementPage() {
                 className="bg-white p-6"
               >
                 {feature.image ? (
-                  <img
+                  <LightboxImage
                     src={feature.image}
                     alt={feature.title}
                     className="w-full aspect-video object-cover mb-4"

@@ -7,9 +7,8 @@ import { ArrowLeft, CheckCircle } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 
-// Replace with your actual form ID from consult.ai
-const CONSULT_AI_FORM_ID = 'cmki5i1on000cws6pgl0fjl8m';
-const CONSULT_AI_URL = 'https://consult-ai-mauve.vercel.app';
+// Replace with your Formspree form ID from https://formspree.io
+const FORMSPREE_FEEDBACK_ID = 'mjgglolw';
 
 export default function FeedbackPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -56,26 +55,25 @@ export default function FeedbackPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${CONSULT_AI_URL}/api/forms/${CONSULT_AI_FORM_ID}/responses`, {
+      const response = await fetch(`https://formspree.io/f/${FORMSPREE_FEEDBACK_ID}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          data: {
-            'Name': `${formData.firstName} ${formData.lastName}`,
-            'Email': formData.email,
-            'Address': formData.address,
-            'Postcode': formData.postcode,
-            'Connection to area': formData.connection,
-            'Support for new homes': formData.support,
-            'Most important element': formData.importance,
-            'Community facility': formData.facility === 'Other' ? formData.facilityOther : formData.facility,
-            'Use of pedestrian/cycle links': formData.links,
-            'Transport contributions': formData.transport.join(', '),
-            'Green space priority': formData.greenspace,
-            'Affordable housing tenure': formData.tenure,
-            'Further feedback': formData.furtherFeedback,
-            'Subscribe to updates': formData.updates ? 'Yes' : 'No',
-          }
+          _subject: 'Grove Heath North - Feedback Form Submission',
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          address: formData.address,
+          postcode: formData.postcode,
+          connection_to_area: formData.connection,
+          support_for_new_homes: formData.support,
+          most_important_element: formData.importance,
+          community_facility: formData.facility === 'Other' ? formData.facilityOther : formData.facility,
+          pedestrian_cycle_links: formData.links,
+          transport_contributions: formData.transport.join(', '),
+          green_space_priority: formData.greenspace,
+          affordable_housing_tenure: formData.tenure,
+          further_feedback: formData.furtherFeedback,
+          subscribe_to_updates: formData.updates ? 'Yes' : 'No',
         }),
       });
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import LightboxImage from './LightboxImage';
 
 export default function AboutSection() {
   return (
@@ -38,35 +39,18 @@ export default function AboutSection() {
             </div>
           </motion.div>
 
-          {/* Image Gallery */}
+          {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid grid-cols-2 gap-4"
           >
-            <div className="col-span-2">
-              <img
-                src="/images/about1.webp"
-                alt="About the site"
-                className="w-full h-64 object-cover rounded-lg"
-              />
-            </div>
-            <div>
-              <img
-                src="/images/about2.webp"
-                alt="Site landscape"
-                className="w-full h-48 object-cover rounded-lg"
-              />
-            </div>
-            <div>
-              <img
-                src="/images/about3.webp"
-                alt="Local area"
-                className="w-full h-48 object-cover rounded-lg"
-              />
-            </div>
+            <LightboxImage
+              src="/images/homepage-cgi.png"
+              alt="Grove Heath North development CGI"
+              className="w-full rounded-lg"
+            />
           </motion.div>
         </div>
 
